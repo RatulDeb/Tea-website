@@ -144,6 +144,29 @@ test('clicking anywhere on a product card opens details, while add to cart still
   await expect(page.locator('.toast')).toContainText('Moonlit Jasmine added to your cart.')
 })
 
+test('product details offer 250 g to 5 kg packs with scaled prices', async ({ page }) => {
+  await page.goto('/')
+  const card = page.locator('.product-card').filter({ hasText: 'Brahmaputra Dawn' })
+  await card.click()
+
+  const dialog = page.getByRole('dialog')
+  await expect(dialog).toBeVisible()
+  await expect(dialog.getByRole('radio')).toHaveCount(7)
+  await expect(dialog.getByRole('radio', { name: '250 g' })).toBeChecked()
+
+  const addButton = dialog.getByRole('button', { name: /Add to Cart/ })
+  await expect(addButton).toContainText(money(3200))
+
+  await dialog.getByRole('radio', { name: '1 kg' }).check()
+  await expect(addButton).toContainText(money(12800))
+  await addButton.click()
+  await expect(dialog).toBeHidden()
+
+  await page.getByRole('link', { name: '1 item in cart' }).click()
+  await expect(page.locator('.cart-line')).toContainText('1 kg pouch')
+  await expect(page.locator('.cart-unit-price')).toContainText('৳128.00 each')
+})
+
 test('cart totals, quantity changes, free shipping threshold, persistence, and empty state', async ({
   page,
 }) => {
@@ -154,29 +177,28 @@ test('cart totals, quantity changes, free shipping threshold, persistence, and e
   await expect(page).toHaveURL(/\/cart$/)
   await expect(page.locator('.cart-line')).toHaveCount(1)
   await expect(page.locator('.cart-line')).toContainText('Brahmaputra Dawn')
-  await expect(page.locator('.cart-line')).toContainText('100 g pouch')
-  await expect(page.locator('.cart-unit-price')).toContainText('৳12.80 each')
-  await expect(page.locator('.cart-line-total')).toContainText('৳12.80')
+  await expect(page.locator('.cart-line')).toContainText('250 g pouch')
+  await expect(page.locator('.cart-unit-price')).toContainText('৳32.00 each')
+  await expect(page.locator('.cart-line-total')).toContainText('৳32.00')
 
   const summary = page.locator('.summary-card')
-  await expect(summary).toContainText('৳12.80')
-  await expect(summary).toContainText('−৳3.20')
+  await expect(summary).toContainText('৳32.00')
+  await expect(summary).toContainText('−৳8.00')
   await expect(summary).toContainText('৳4.95')
-  await expect(summary).toContainText('৳17.75')
+  await expect(summary).toContainText('৳36.95')
   await expect(summary).toContainText('already in the prices above')
 
-  await page.getByRole('button', { name: 'Increase quantity of Brahmaputra Dawn' }).click()
+  await page.getByRole('button', { name: /Increase quantity of Brahmaputra Dawn/ }).click()
   await expect(page.getByRole('link', { name: '2 items in cart' })).toBeVisible()
-  await expect(summary).toContainText('৳25.60')
-  await expect(summary).toContainText('৳30.55')
-  await expect(summary).toContainText('−৳6.40')
+  await expect(summary).toContainText('৳64.00')
+  await expect(summary).toContainText('−৳16.00')
 
   await page.reload()
   await expect(page.locator('.qty-value')).toHaveText('2')
-  await expect(summary).toContainText('৳30.55')
+  await expect(summary).toContainText('৳64.00')
 
-  await page.getByRole('button', { name: 'Increase quantity of Brahmaputra Dawn' }).click()
-  await expect(summary).toContainText('৳38.40')
+  await page.getByRole('button', { name: /Increase quantity of Brahmaputra Dawn/ }).click()
+  await expect(summary).toContainText('৳96.00')
   await expect(summary.locator('.free-shipping')).toHaveText('Free')
   await expect(summary).toContainText('Free shipping unlocked')
   await expect(summary.locator('.summary-list')).not.toContainText('৳4.95')
@@ -185,10 +207,10 @@ test('cart totals, quantity changes, free shipping threshold, persistence, and e
     window.localStorage.getItem('leaf-kettle-cart-v1'),
   )
   expect(JSON.parse(stored ?? '[]')).toEqual([
-    { productId: 'assam-black-tea', quantity: 3 },
+    { productId: 'assam-black-tea', grams: 250, quantity: 3 },
   ])
 
-  await page.getByRole('button', { name: 'Remove Brahmaputra Dawn' }).click()
+  await page.getByRole('button', { name: /Remove Brahmaputra Dawn/ }).click()
   await expect(page.getByRole('heading', { name: 'Your cart is empty' })).toBeVisible()
   await expect(page.getByRole('link', { name: '0 items in cart' })).toBeVisible()
 })
@@ -206,9 +228,9 @@ test('checkout validates required fields and email, then confirms a demo order a
   const summary = page.locator('.checkout-summary')
   await expect(summary).toContainText('Brahmaputra Dawn')
   await expect(summary).toContainText('Qty 1')
-  await expect(summary).toContainText('৳12.80')
+  await expect(summary).toContainText('৳32.00')
   await expect(summary).toContainText('৳4.95')
-  await expect(summary).toContainText('৳17.75')
+  await expect(summary).toContainText('৳36.95')
 
   await page.getByRole('button', { name: /Pay .*test mode/ }).click()
   await expect(page.getByRole('alert')).toContainText('Please check the highlighted fields')
@@ -239,9 +261,9 @@ test('checkout validates required fields and email, then confirms a demo order a
   await expect(page.locator('.confirmation-card')).toContainText('test mode')
   await expect(page.locator('.confirmation-card')).toContainText('4242')
   await expect(page.getByText('No payment was taken and no email has been sent.')).toBeVisible()
-  await expect(page.locator('.confirmation-card')).toContainText('৳12.80')
+  await expect(page.locator('.confirmation-card')).toContainText('৳32.00')
   await expect(page.locator('.confirmation-card')).toContainText('৳4.95')
-  await expect(page.locator('.confirmation-card')).toContainText('৳17.75')
+  await expect(page.locator('.confirmation-card')).toContainText('৳36.95')
   await expect(page.getByRole('link', { name: '0 items in cart' })).toBeVisible()
 
   const stored = await page.evaluate(() =>

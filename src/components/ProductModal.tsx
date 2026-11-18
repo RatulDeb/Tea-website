@@ -1,7 +1,11 @@
-import { useEffect, useId, useRef } from 'react'
+import { useEffect, useId, useRef, useState } from 'react'
 import { CheckCircle2, Leaf, ShoppingBag, X } from 'lucide-react'
 import {
+  BASE_GRAMS,
+  getPackLabel,
+  getPackPriceCents,
   getSalePriceCents,
+  packSizes,
   SALE_RATE,
   type TeaProduct,
 } from '../data/products'
@@ -18,10 +22,13 @@ export function ProductModal({ product, onClose }: ProductModalProps) {
   const dialogRef = useRef<HTMLDialogElement>(null)
   const titleId = useId()
   const descriptionId = useId()
+  const packGroupId = useId()
+  const [grams, setGrams] = useState<number>(BASE_GRAMS)
   const { addItem, quantityFor } = useCart()
-  const saleCents = getSalePriceCents(product.originalPriceCents)
-  const savingsCents = product.originalPriceCents - saleCents
-  const inCart = quantityFor(product.id)
+  const originalCents = getPackPriceCents(product.originalPriceCents, grams)
+  const saleCents = getSalePriceCents(originalCents)
+  const savingsCents = originalCents - saleCents
+  const inCart = quantityFor(product.id, grams)
 
   useEffect(() => {
     const dialog = dialogRef.current
@@ -36,7 +43,7 @@ export function ProductModal({ product, onClose }: ProductModalProps) {
   }, [])
 
   function handleAdd() {
-    addItem(product.id)
+    addItem(product.id, grams)
     dialogRef.current?.close()
   }
 
@@ -72,7 +79,7 @@ export function ProductModal({ product, onClose }: ProductModalProps) {
         <div className="modal-content">
           <p className="eyebrow">
             {product.category === 'Herbal' ? 'Herbal infusion' : `${product.category} tea`} ·{' '}
-            {product.size}
+            {getPackLabel(grams)}
           </p>
           <h2 id={titleId}>{product.name}</h2>
           <p className="modal-variety">{product.variety}</p>
@@ -80,11 +87,40 @@ export function ProductModal({ product, onClose }: ProductModalProps) {
             {product.description}
           </p>
 
+          <fieldset className="pack-picker">
+            <legend>Pack size</legend>
+            <div className="pack-options">
+              {packSizes.map((pack) => (
+                <label
+                  key={pack.grams}
+                  className={`pack-option${grams === pack.grams ? ' is-selected' : ''}`}
+                >
+                  <input
+                    type="radio"
+                    name={`pack-size-${packGroupId}`}
+                    value={pack.grams}
+                    checked={grams === pack.grams}
+                    onChange={() => setGrams(pack.grams)}
+                    aria-label={pack.label}
+                  />
+                  <span className="pack-label">{pack.label}</span>
+                  <span className="pack-price">
+                    {formatMoney(
+                      getSalePriceCents(
+                        getPackPriceCents(product.originalPriceCents, pack.grams),
+                      ),
+                    )}
+                  </span>
+                </label>
+              ))}
+            </div>
+          </fieldset>
+
           <div className="modal-price-row">
             <div className="price-block">
               <del className="price-was">
                 <span className="sr-only">Original price </span>
-                {formatMoney(product.originalPriceCents)}
+                {formatMoney(originalCents)}
               </del>
               <span className="price-now">
                 <span className="sr-only">Sale price </span>
@@ -127,7 +163,7 @@ export function ProductModal({ product, onClose }: ProductModalProps) {
             </div>
             <div>
               <dt>Package</dt>
-              <dd>{product.size} resealable pouch</dd>
+              <dd>{getPackLabel(grams)} resealable pouch</dd>
             </div>
           </dl>
 

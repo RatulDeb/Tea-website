@@ -37,7 +37,7 @@ export function Footer() {
           </Link>
           <p>
             Considered loose-leaf teas and caffeine-free infusions, packed in
-            generous 100 g pouches for everyday rituals.
+            generous pouches from 250 g to 5 kg for everyday rituals.
           </p>
           <p className="footer-demo-note">
             This is a demo storefront. Sample content only; no orders or payments

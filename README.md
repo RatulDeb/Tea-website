@@ -39,7 +39,7 @@ The end-to-end suite covers the 20-product catalog, discount and image checks, s
 
 ## Demo behavior
 
-- Every 100 g pouch is displayed at 20% off. The sale price is stored in the cart as the only charged price; the original price and savings are shown for context.
+- Every pack is displayed at 20% off, from a 250 g pouch up to 5 kg. The sale price is stored in the cart as the only charged price; the original price and savings are shown for context.
 - Shipping is a flat `৳4.95`, free at `৳35.00` and above. No tax or extra charges are added.
 - The cart is saved in localStorage under `leaf-kettle-cart-v1` and stays available after a refresh.
 - Checkout is a demonstration only. It collects a shipping address plus test-mode card fields (or "pay on delivery"), shows a sample order number, but never charges money, stores card details, or sends email. Use test card `4242 4242 4242 4242` with any future expiry and any CVC.

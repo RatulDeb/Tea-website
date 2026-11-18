@@ -130,7 +130,7 @@ export const choosingSteps = [
   },
   {
     title: 'Build a small ritual',
-    body: 'A 100 g pouch is a generous place to begin. Start with one tea, a favourite mug, and a timer. Adjust the leaf amount and steep time to suit your taste.',
+    body: 'A 250 g pouch is a generous place to begin. Start with one tea, a favourite mug, and a timer. Adjust the leaf amount and steep time to suit your taste.',
   },
 ]
 

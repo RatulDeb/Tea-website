@@ -36,7 +36,7 @@ export function TeaInfoPage() {
               Leaf &amp; Kettle is a demo tea atelier built around a simple idea:
               a good cup should be easy to make, easy to understand, and worth
               slowing down for. Our range spans classic tea styles and
-              caffeine-free herbal infusions, each packed in a 100 g pouch.
+              caffeine-free herbal infusions, packed from 250 g up to 5 kg.
             </p>
             <div className="hero-actions">
               <Link className="btn btn-primary btn-large" to="/">

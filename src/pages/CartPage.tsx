@@ -96,7 +96,7 @@ export function CartPage() {
             </div>
             <ul className="cart-lines" aria-live="polite">
               {items.map((item) => (
-                <li className="cart-line" key={item.product.id}>
+                <li className="cart-line" key={`${item.product.id}-${item.grams}`}>
                   <TeaImage
                     src={item.product.image}
                     alt={item.product.imageAlt}
@@ -107,7 +107,7 @@ export function CartPage() {
                     <p className="cart-line-category">{item.product.category}</p>
                     <h3>{item.product.name}</h3>
                     <p className="cart-line-variety">{item.product.variety}</p>
-                    <p className="cart-line-size">{item.product.size} pouch</p>
+                    <p className="cart-line-size">{item.sizeLabel} pouch</p>
                     <div className="cart-unit-price">
                       <span>{formatMoney(item.unitSaleCents)} each</span>
                       <del>
@@ -119,19 +119,23 @@ export function CartPage() {
                   <div className="cart-line-controls">
                     <QuantityStepper
                       quantity={item.quantity}
-                      productName={item.product.name}
+                      productName={`${item.product.name} (${item.sizeLabel})`}
                       onChange={(quantity) =>
-                        updateQuantity(item.product.id, quantity)
+                        updateQuantity(item.product.id, item.grams, quantity)
                       }
                       compact
                     />
                     <button
                       type="button"
                       className="icon-text-button remove-button"
-                      onClick={() => removeItem(item.product.id)}
+                      onClick={() => removeItem(item.product.id, item.grams)}
                     >
                       <Trash2 aria-hidden="true" />
-                      Remove<span className="sr-only"> {item.product.name}</span>
+                      Remove
+                      <span className="sr-only">
+                        {' '}
+                        {item.product.name} ({item.sizeLabel})
+                      </span>
                     </button>
                   </div>
                   <div className="cart-line-total">
@@ -145,8 +149,7 @@ export function CartPage() {
             <div className="cart-assurance">
               <p>
                 <Leaf aria-hidden="true" />
-                Every pouch is 100 g and packed for a generous run of everyday
-                cups.
+                Every pouch is packed to order, from a 250 g pouch up to 5 kg.
               </p>
               <p>
                 <ShieldCheck aria-hidden="true" />

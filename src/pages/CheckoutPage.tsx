@@ -362,7 +362,7 @@ export function CheckoutPage() {
         id: item.product.id,
         name: item.product.name,
         variety: item.product.variety,
-        size: item.product.size,
+        size: item.sizeLabel,
         quantity: item.quantity,
         unitSaleCents: item.unitSaleCents,
         lineSaleCents: item.lineSaleCents,
@@ -427,7 +427,7 @@ export function CheckoutPage() {
                 <h2 id="confirmation-summary-heading">Order summary</h2>
                 <ul className="confirmation-lines">
                   {order.lines.map((line) => (
-                    <li key={line.id}>
+                    <li key={`${line.id}-${line.size}`}>
                       <TeaImage
                         src={line.image}
                         alt={line.imageAlt}
@@ -1027,7 +1027,7 @@ export function CheckoutPage() {
 
             <ul className="checkout-items">
               {items.map((item) => (
-                <li key={item.product.id}>
+                <li key={`${item.product.id}-${item.grams}`}>
                   <TeaImage
                     src={item.product.image}
                     alt={item.product.imageAlt}
@@ -1037,7 +1037,7 @@ export function CheckoutPage() {
                   <div className="checkout-item-info">
                     <p className="checkout-item-name">{item.product.name}</p>
                     <p className="checkout-item-meta">
-                      {item.product.size} · Qty {item.quantity}
+                      {item.sizeLabel} · Qty {item.quantity}
                     </p>
                     <p className="checkout-item-unit">
                       {formatMoney(item.unitSaleCents)} each

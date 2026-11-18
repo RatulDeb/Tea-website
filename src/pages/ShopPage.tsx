@@ -114,15 +114,15 @@ export function ShopPage() {
           <div className="hero-copy">
             <p className="eyebrow">
               <span className="eyebrow-line" aria-hidden="true" />
-              Loose leaf · 100 g pouches
+              Loose leaf · 250 g to 5 kg
             </p>
             <h1>
               Find your <em>quiet cup.</em>
             </h1>
             <p className="hero-lede">
-              Twenty considered teas and caffeine-free infusions, each 100 g
-              pouch at <strong>{formatDiscount(SALE_RATE)}</strong> for our demo
-              launch.
+              Twenty considered teas and caffeine-free infusions, from a 250 g
+              pouch up to a 5 kg bag, at{' '}
+              <strong>{formatDiscount(SALE_RATE)}</strong> for our demo launch.
             </p>
             <div className="hero-actions">
               <a className="btn btn-primary btn-large" href="#teas">

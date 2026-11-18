@@ -11,6 +11,30 @@ export type TeaCategory = (typeof teaCategories)[number]
 
 export const SALE_RATE = 0.8
 
+export const BASE_GRAMS = 250
+
+export const packSizes = [
+  { grams: 250, label: '250 g' },
+  { grams: 500, label: '500 g' },
+  { grams: 1000, label: '1 kg' },
+  { grams: 2000, label: '2 kg' },
+  { grams: 3000, label: '3 kg' },
+  { grams: 4000, label: '4 kg' },
+  { grams: 5000, label: '5 kg' },
+] as const
+
+export function getPackLabel(grams: number): string {
+  return packSizes.find((pack) => pack.grams === grams)?.label ?? `${grams} g`
+}
+
+export function isPackGrams(grams: number): boolean {
+  return packSizes.some((pack) => pack.grams === grams)
+}
+
+export function getPackPriceCents(baseCents: number, grams: number): number {
+  return Math.round((baseCents * grams) / BASE_GRAMS)
+}
+
 export interface BrewingGuide {
   amount: string
   water: string
@@ -43,7 +67,7 @@ export function isHerbal(product: TeaProduct): boolean {
   return product.category === 'Herbal'
 }
 
-const size = '100 g'
+const size = '250 g'
 
 export const products: TeaProduct[] = [
   {
@@ -59,7 +83,7 @@ export const products: TeaProduct[] = [
     origin: 'Assam, India',
     caffeine: 'Moderate–high caffeine',
     size,
-    originalPriceCents: 1600,
+    originalPriceCents: 4000,
     brewing: { amount: '2.5 g / 200 ml', water: '95–100°C', time: '3–4 min' },
     image: '/images/assam-black-tea.jpg',
     imageAlt:
@@ -78,7 +102,7 @@ export const products: TeaProduct[] = [
     origin: 'Darjeeling, India',
     caffeine: 'Moderate caffeine',
     size,
-    originalPriceCents: 2200,
+    originalPriceCents: 5500,
     brewing: { amount: '2.5 g / 200 ml', water: '90–95°C', time: '3–4 min' },
     image: '/images/darjeeling-black-tea.jpg',
     imageAlt:
@@ -98,7 +122,7 @@ export const products: TeaProduct[] = [
     origin: 'A classic bergamot-scented blend',
     caffeine: 'Moderate caffeine',
     size,
-    originalPriceCents: 1500,
+    originalPriceCents: 3750,
     brewing: { amount: '2.5 g / 200 ml', water: '95–100°C', time: '3–4 min' },
     image: '/images/earl-grey.jpg',
     imageAlt:
@@ -117,7 +141,7 @@ export const products: TeaProduct[] = [
     origin: 'A traditional black tea blend',
     caffeine: 'Moderate–high caffeine',
     size,
-    originalPriceCents: 1400,
+    originalPriceCents: 3500,
     brewing: { amount: '2.5 g / 200 ml', water: '95–100°C', time: '3–4 min' },
     image: '/images/english-breakfast.jpg',
     imageAlt:
@@ -137,7 +161,7 @@ export const products: TeaProduct[] = [
     origin: 'India',
     caffeine: 'Moderate caffeine',
     size,
-    originalPriceCents: 1700,
+    originalPriceCents: 4250,
     brewing: { amount: '3 g / 200 ml', water: '95–100°C', time: '4–5 min' },
     image: '/images/masala-chai.jpg',
     imageAlt:
@@ -156,7 +180,7 @@ export const products: TeaProduct[] = [
     origin: 'Shizuoka, Japan',
     caffeine: 'Moderate caffeine',
     size,
-    originalPriceCents: 1800,
+    originalPriceCents: 4500,
     brewing: { amount: '2 g / 200 ml', water: '70–80°C', time: '1–2 min' },
     image: '/images/sencha-green-tea.jpg',
     imageAlt: 'Loose sencha green tea leaves piled in a white dish.',
@@ -174,7 +198,7 @@ export const products: TeaProduct[] = [
     origin: 'Fujian, China',
     caffeine: 'Moderate caffeine',
     size,
-    originalPriceCents: 1900,
+    originalPriceCents: 4750,
     brewing: { amount: '2 g / 200 ml', water: '75–80°C', time: '2–3 min' },
     image: '/images/jasmine-green-tea.jpg',
     imageAlt: 'A glass of jasmine tea with jasmine blossoms floating inside.',
@@ -192,7 +216,7 @@ export const products: TeaProduct[] = [
     origin: 'Japan',
     caffeine: 'High caffeine',
     size,
-    originalPriceCents: 2800,
+    originalPriceCents: 7000,
     brewing: { amount: '1–2 g / 60–80 ml', water: '80°C', time: 'Whisk until frothy' },
     image: '/images/matcha.jpg',
     imageAlt:
@@ -211,7 +235,7 @@ export const products: TeaProduct[] = [
     origin: 'North African-style blend',
     caffeine: 'Moderate caffeine',
     size,
-    originalPriceCents: 1600,
+    originalPriceCents: 4000,
     brewing: { amount: '2.5 g / 200 ml', water: '80°C', time: '2–3 min' },
     image: '/images/moroccan-mint-green-tea.jpg',
     imageAlt:
@@ -230,7 +254,7 @@ export const products: TeaProduct[] = [
     origin: 'Hangzhou, Zhejiang, China',
     caffeine: 'Moderate caffeine',
     size,
-    originalPriceCents: 2600,
+    originalPriceCents: 6500,
     brewing: { amount: '2 g / 200 ml', water: '75–80°C', time: '2–3 min' },
     image: '/images/longjing-green-tea.jpg',
     imageAlt:
@@ -249,7 +273,7 @@ export const products: TeaProduct[] = [
     origin: 'Fujian, China',
     caffeine: 'Low–moderate caffeine',
     size,
-    originalPriceCents: 3200,
+    originalPriceCents: 8000,
     brewing: { amount: '2.5 g / 200 ml', water: '80–85°C', time: '4–5 min' },
     image: '/images/silver-needle-white-tea.jpg',
     imageAlt:
@@ -268,7 +292,7 @@ export const products: TeaProduct[] = [
     origin: 'Fujian, China',
     caffeine: 'Low–moderate caffeine',
     size,
-    originalPriceCents: 2400,
+    originalPriceCents: 6000,
     brewing: { amount: '2.5 g / 200 ml', water: '85°C', time: '3–5 min' },
     image: '/images/white-peony-tea.jpg',
     imageAlt:
@@ -287,7 +311,7 @@ export const products: TeaProduct[] = [
     origin: 'Anxi, Fujian, China',
     caffeine: 'Moderate caffeine',
     size,
-    originalPriceCents: 2500,
+    originalPriceCents: 6250,
     brewing: { amount: '3 g / 200 ml', water: '90–95°C', time: '3–4 min' },
     image: '/images/tieguanyin-oolong.jpg',
     imageAlt:
@@ -306,7 +330,7 @@ export const products: TeaProduct[] = [
     origin: 'Nantou, Taiwan',
     caffeine: 'Moderate caffeine',
     size,
-    originalPriceCents: 2700,
+    originalPriceCents: 6750,
     brewing: { amount: '3 g / 200 ml', water: '90°C', time: '3–4 min' },
     image: '/images/milk-oolong.jpg',
     imageAlt:
@@ -325,7 +349,7 @@ export const products: TeaProduct[] = [
     origin: 'Yunnan, China',
     caffeine: 'Moderate–high caffeine',
     size,
-    originalPriceCents: 3000,
+    originalPriceCents: 7500,
     brewing: { amount: '3 g / 200 ml', water: '95–100°C', time: '3–5 min' },
     image: '/images/pu-erh-tea.jpg',
     imageAlt: 'A round raw pu-erh tea cake wrapped in white paper.',
@@ -343,7 +367,7 @@ export const products: TeaProduct[] = [
     origin: 'Western Cape, South Africa',
     caffeine: 'Caffeine-free',
     size,
-    originalPriceCents: 1300,
+    originalPriceCents: 3250,
     brewing: { amount: '2.5 g / 200 ml', water: '95–100°C', time: '5–7 min' },
     image: '/images/rooibos.jpg',
     imageAlt: 'A mound of fine red-brown rooibos tea in a white bowl.',
@@ -361,7 +385,7 @@ export const products: TeaProduct[] = [
     origin: 'Egypt',
     caffeine: 'Caffeine-free',
     size,
-    originalPriceCents: 1200,
+    originalPriceCents: 3000,
     brewing: { amount: '2 g / 200 ml', water: '95–100°C', time: '5–7 min' },
     image: '/images/chamomile.jpg',
     imageAlt:
@@ -380,7 +404,7 @@ export const products: TeaProduct[] = [
     origin: 'Pacific Northwest, USA',
     caffeine: 'Caffeine-free',
     size,
-    originalPriceCents: 1100,
+    originalPriceCents: 2750,
     brewing: { amount: '2 g / 200 ml', water: '95–100°C', time: '5–7 min' },
     image: '/images/peppermint.jpg',
     imageAlt:
@@ -399,7 +423,7 @@ export const products: TeaProduct[] = [
     origin: 'West Africa',
     caffeine: 'Caffeine-free',
     size,
-    originalPriceCents: 1200,
+    originalPriceCents: 3000,
     brewing: { amount: '2 g / 200 ml', water: '95–100°C', time: '5–7 min' },
     image: '/images/hibiscus.jpg',
     imageAlt: 'A glass cup of deep ruby-red hibiscus tea on a saucer.',
@@ -417,7 +441,7 @@ export const products: TeaProduct[] = [
     origin: 'A warming botanical blend',
     caffeine: 'Caffeine-free',
     size,
-    originalPriceCents: 1300,
+    originalPriceCents: 3250,
     brewing: { amount: '2.5 g / 200 ml', water: '95–100°C', time: '5–7 min' },
     image: '/images/ginger-lemongrass.jpg',
     imageAlt: 'A glass mug of pale golden ginger and lemongrass tea.',

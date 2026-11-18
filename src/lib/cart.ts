@@ -1,17 +1,24 @@
 import {
-  productById,
+  BASE_GRAMS,
+  getPackLabel,
+  getPackPriceCents,
   getSalePriceCents,
+  isPackGrams,
+  productById,
   type TeaProduct,
 } from '../data/products'
 import { siteConfig } from '../data/site'
 
 export interface CartLine {
   productId: string
+  grams: number
   quantity: number
 }
 
 export interface CartItem {
   product: TeaProduct
+  grams: number
+  sizeLabel: string
   quantity: number
   unitSaleCents: number
   unitOriginalCents: number
@@ -37,20 +44,35 @@ export function normalizeQuantity(quantity: number): number {
   return Math.min(MAX_QUANTITY, Math.max(1, Math.floor(quantity)))
 }
 
+export function normalizeGrams(grams: number): number {
+  return isPackGrams(grams) ? grams : BASE_GRAMS
+}
+
+export function cartLineKey(line: Pick<CartLine, 'productId' | 'grams'>): string {
+  return `${line.productId}:${normalizeGrams(line.grams)}`
+}
+
 export function buildCartItems(lines: CartLine[]): CartItem[] {
   return lines.flatMap((line) => {
     const product = productById.get(line.productId)
     if (!product) return []
+    const grams = normalizeGrams(line.grams)
     const quantity = normalizeQuantity(line.quantity)
-    const unitSaleCents = getSalePriceCents(product.originalPriceCents)
+    const unitOriginalCents = getPackPriceCents(
+      product.originalPriceCents,
+      grams,
+    )
+    const unitSaleCents = getSalePriceCents(unitOriginalCents)
     return [
       {
         product,
+        grams,
+        sizeLabel: getPackLabel(grams),
         quantity,
         unitSaleCents,
-        unitOriginalCents: product.originalPriceCents,
+        unitOriginalCents,
         lineSaleCents: unitSaleCents * quantity,
-        lineOriginalCents: product.originalPriceCents * quantity,
+        lineOriginalCents: unitOriginalCents * quantity,
       },
     ]
   })

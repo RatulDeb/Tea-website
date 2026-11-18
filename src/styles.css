@@ -2947,110 +2947,8 @@ input[type='search']::-webkit-search-cancel-button {
   color: var(--forest-950);
 }
 
-.contact-section {
-  background: var(--cream-2);
-  border-top: 1px solid var(--line);
-}
-
-.contact-head {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 1rem 2rem;
-  margin-bottom: clamp(1.5rem, 3vw, 2.2rem);
-}
-
-.contact-head .eyebrow {
-  margin-bottom: 0.5rem;
-}
-
-.contact-head h2 {
-  font-size: clamp(1.6rem, 2.6vw, 2.2rem);
-}
-
-.contact-lede {
-  max-width: 38ch;
-  color: var(--muted);
-  font-size: 0.9rem;
-  line-height: 1.55;
-}
-
-.contact-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
-  gap: 1rem;
-}
-
-.contact-card {
-  padding: 1.3rem;
-  border: 1px solid var(--line);
-  border-radius: 16px;
-  background: var(--paper);
-}
-
-.contact-icon {
-  display: grid;
-  width: 40px;
-  height: 40px;
-  place-items: center;
-  margin-bottom: 0.8rem;
-  border-radius: 50%;
-  background: var(--forest-900);
-  color: var(--cream);
-}
-
-.contact-icon svg {
-  width: 18px;
-  height: 18px;
-}
-
-.contact-card h3 {
-  font-family: var(--sans);
-  font-size: 0.71rem;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--forest-800);
-}
-
-.contact-card p,
-.contact-card address {
-  margin-top: 0.5rem;
-  color: var(--muted);
-  font-size: 0.86rem;
-  font-style: normal;
-  line-height: 1.55;
-}
-
-.contact-card address {
-  display: flex;
-  flex-direction: column;
-  gap: 0.15rem;
-}
-
-.contact-address-link {
-  display: flex;
-  flex-direction: column;
-  gap: 0.15rem;
-}
-
-.contact-card a {
-  color: var(--forest-900);
-  text-decoration: none;
-}
-
-.contact-card a:hover {
-  text-decoration: underline;
-  text-underline-offset: 3px;
-}
-
-.contact-links {
-  display: flex;
-  flex-direction: column;
-  gap: 0.2rem;
-}
-
 .site-footer {
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
   background: var(--forest-950);
   color: #d9e2d8;
 }
@@ -3451,14 +3349,6 @@ input[type='search']::-webkit-search-cancel-button {
   }
 
   .catalog-lede {
-    margin-top: 0.55rem;
-  }
-
-  .contact-head {
-    display: block;
-  }
-
-  .contact-lede {
     margin-top: 0.55rem;
   }
 

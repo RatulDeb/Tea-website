@@ -2,11 +2,7 @@
 import { Link, useSearchParams } from 'react-router-dom'
 import {
   ArrowRight,
-  Clock,
   Leaf,
-  Mail,
-  MapPin,
-  Phone,
   Search,
   ShieldCheck,
   Sparkles,
@@ -24,7 +20,6 @@ import {
   type TeaProduct,
 } from '../data/products'
 import { siteConfig } from '../data/site'
-import { formatAddress, gmailComposeUrl, googleMapsUrl, telHref } from '../lib/contact'
 import { usePageTitle } from '../hooks/usePageTitle'
 import { formatDiscount, formatMoney } from '../lib/money'
 
@@ -111,13 +106,6 @@ export function ShopPage() {
 
   const hasActiveFilters = search.trim().length > 0 || category !== 'All'
   const isFiltering = search !== deferredSearch
-
-  const contactAddress = formatAddress(siteConfig.contact.addressLines)
-  const contactMailUrl = gmailComposeUrl(
-    siteConfig.contact.email,
-    'Tea enquiry from the website',
-  )
-  const contactMapsUrl = googleMapsUrl(contactAddress)
 
   return (
     <>
@@ -332,92 +320,6 @@ export function ShopPage() {
             Explore the tea guide
             <ArrowRight aria-hidden="true" />
           </Link>
-        </div>
-      </section>
-
-      <section
-        id="contact"
-        className="section contact-section"
-        aria-labelledby="contact-heading"
-      >
-        <div className="shell">
-          <div className="contact-head">
-            <div>
-              <p className="eyebrow">Contact</p>
-              <h2 id="contact-heading">Talk to us about your tea</h2>
-            </div>
-            <p className="contact-lede">
-              Questions about a blend, an order, or bulk tea? Call, email, or
-              visit the shop — we are glad to help.
-            </p>
-          </div>
-
-          <div className="contact-grid">
-            <div className="contact-card">
-              <span className="contact-icon" aria-hidden="true">
-                <Phone />
-              </span>
-              <h3>Call us</h3>
-              <p className="contact-links">
-                {siteConfig.contact.phones.map((phone) => (
-                  <a key={phone} href={telHref(phone)}>
-                    {phone}
-                  </a>
-                ))}
-              </p>
-            </div>
-
-            <div className="contact-card">
-              <span className="contact-icon" aria-hidden="true">
-                <Mail />
-              </span>
-              <h3>Email us</h3>
-              <p className="contact-links">
-                <a
-                  href={contactMailUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {siteConfig.contact.email}
-                  <span className="sr-only">
-                    {' '}
-                    (opens Gmail compose in a new tab)
-                  </span>
-                </a>
-              </p>
-            </div>
-
-            <div className="contact-card">
-              <span className="contact-icon" aria-hidden="true">
-                <MapPin />
-              </span>
-              <h3>Visit the shop</h3>
-              <address>
-                <a
-                  className="contact-address-link"
-                  href={contactMapsUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {siteConfig.contact.addressLines.map((line) => (
-                    <span key={line}>{line}</span>
-                  ))}
-                  <span className="sr-only">
-                    {' '}
-                    (opens Google Maps in a new tab)
-                  </span>
-                </a>
-              </address>
-            </div>
-
-            <div className="contact-card">
-              <span className="contact-icon" aria-hidden="true">
-                <Clock />
-              </span>
-              <h3>Opening hours</h3>
-              <p>{siteConfig.contact.hours}</p>
-            </div>
-          </div>
         </div>
       </section>
 

@@ -1,5 +1,5 @@
 ﻿import { Link } from 'react-router-dom'
-import { Leaf, Mail, Phone } from 'lucide-react'
+import { Clock, Leaf, Mail, MapPin, Phone } from 'lucide-react'
 import { siteConfig } from '../data/site'
 import { formatMoney } from '../lib/money'
 
@@ -66,12 +66,20 @@ export function Footer() {
             <a href={`mailto:${siteConfig.contact.email}`}>
               <Mail aria-hidden="true" /> {siteConfig.contact.email}
             </a>
-            <a href={`tel:${siteConfig.contact.phone.replace(/[^+\d]/g, '')}`}>
-              <Phone aria-hidden="true" /> {siteConfig.contact.phone}
-            </a>
-            <span>{siteConfig.contact.hours}</span>
+            {siteConfig.contact.phones.map((phone) => (
+              <a key={phone} href={`tel:${phone.replace(/[^+\d]/g, '')}`}>
+                <Phone aria-hidden="true" /> {phone}
+              </a>
+            ))}
+            <span className="contact-line">
+              <MapPin aria-hidden="true" />
+              {siteConfig.contact.addressLines.join(', ')}
+            </span>
+            <span className="contact-line">
+              <Clock aria-hidden="true" />
+              {siteConfig.contact.hours}
+            </span>
           </address>
-          <p className="sample-note">{siteConfig.demoNotes.contact}</p>
         </div>
       </div>
       <div className="shell footer-bottom">

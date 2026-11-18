@@ -9,15 +9,19 @@ export const siteConfig = {
     flatRateCents: 495,
   },
   contact: {
-    email: 'hello@leafandkettle.example',
-    wholesaleEmail: 'wholesale@leafandkettle.example',
-    phone: '+1 (555) 010-2048',
-    hours: 'Monday–Friday, 9:00–17:00',
+    email: 'ratuldeb014@gmail.com',
+    wholesaleEmail: 'ratuldeb014@gmail.com',
+    phones: ['+880 1606-958058', '+880 1741-394978'],
+    addressLines: [
+      'R tech Computer, Marwan Complex',
+      'Habiganj Road, Sreemangal',
+      'Moulvibazar, Sylhet',
+    ],
+    hours: 'Monday–Thursday, 10:00 AM – 8:00 PM',
   },
   demoNotes: {
     checkout:
       'This is a demonstration checkout with a test-mode card gateway. No real money is charged and card details are never stored.',
-    contact: 'Contact details are sample content for this demo store.',
     content: 'Service details are sample copy and should be confirmed before launch.',
   },
 } as const

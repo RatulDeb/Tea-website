@@ -48,13 +48,13 @@ The end-to-end suite covers the 20-product catalog, discount and image checks, s
 ## Customize
 
 - Catalog, prices, tasting notes, and brewing guides: `src/data/products.ts`
-- Brand, currency, shipping rule, contact placeholders, and demo notes: `src/data/site.ts`
+- Brand, currency, shipping rule, contact details, and demo notes: `src/data/site.ts`
 - Category guide, brewing table, choosing steps, and service copy: `src/data/content.ts`
 - Image attribution: `src/data/credits.ts`
 - Page styling and responsive layout: `src/styles.css`
 - Product and hero images: `public/images/`
 
-The business name, `.example` email addresses, `555` phone number, service wording, product origins, prices, and package details are sample content. Replace them before launch.
+Service wording, product origins, prices, and package details are sample content. Business and contact details live in `src/data/site.ts`.
 
 ## Deployment
 

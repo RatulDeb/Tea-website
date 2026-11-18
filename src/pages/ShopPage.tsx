@@ -2,7 +2,11 @@
 import { Link, useSearchParams } from 'react-router-dom'
 import {
   ArrowRight,
+  Clock,
   Leaf,
+  Mail,
+  MapPin,
+  Phone,
   Search,
   ShieldCheck,
   Sparkles,
@@ -320,6 +324,73 @@ export function ShopPage() {
             Explore the tea guide
             <ArrowRight aria-hidden="true" />
           </Link>
+        </div>
+      </section>
+
+      <section
+        id="contact"
+        className="section contact-section"
+        aria-labelledby="contact-heading"
+      >
+        <div className="shell">
+          <div className="contact-head">
+            <div>
+              <p className="eyebrow">Contact</p>
+              <h2 id="contact-heading">Talk to us about your tea</h2>
+            </div>
+            <p className="contact-lede">
+              Questions about a blend, an order, or bulk tea? Call, email, or
+              visit the shop — we are glad to help.
+            </p>
+          </div>
+
+          <div className="contact-grid">
+            <div className="contact-card">
+              <span className="contact-icon" aria-hidden="true">
+                <Phone />
+              </span>
+              <h3>Call us</h3>
+              <p className="contact-links">
+                {siteConfig.contact.phones.map((phone) => (
+                  <a key={phone} href={`tel:${phone.replace(/[^+\d]/g, '')}`}>
+                    {phone}
+                  </a>
+                ))}
+              </p>
+            </div>
+
+            <div className="contact-card">
+              <span className="contact-icon" aria-hidden="true">
+                <Mail />
+              </span>
+              <h3>Email us</h3>
+              <p className="contact-links">
+                <a href={`mailto:${siteConfig.contact.email}`}>
+                  {siteConfig.contact.email}
+                </a>
+              </p>
+            </div>
+
+            <div className="contact-card">
+              <span className="contact-icon" aria-hidden="true">
+                <MapPin />
+              </span>
+              <h3>Visit the shop</h3>
+              <address>
+                {siteConfig.contact.addressLines.map((line) => (
+                  <span key={line}>{line}</span>
+                ))}
+              </address>
+            </div>
+
+            <div className="contact-card">
+              <span className="contact-icon" aria-hidden="true">
+                <Clock />
+              </span>
+              <h3>Opening hours</h3>
+              <p>{siteConfig.contact.hours}</p>
+            </div>
+          </div>
         </div>
       </section>
 

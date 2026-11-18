@@ -71,8 +71,9 @@ export function CreditsPage() {
           <h2>Sample details to replace before launch</h2>
           <ul>
             <li>
-              Business name, contact email addresses, phone number, and opening
-              hours are placeholders, including the <code>.example</code> domain.
+              Business name and contact details — email, phone numbers, address,
+              and opening hours — are set in <code>src/data/site.ts</code>. Keep
+              them up to date.
             </li>
             <li>
               Service wording for support, gift packaging, delivery, and bulk

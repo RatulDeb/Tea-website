@@ -125,6 +125,25 @@ test('search, category filters, sort, product modal, and cross-page links work',
   await expect(page.locator('.results-bar')).toContainText('Showing 5 teas in Black')
 })
 
+test('clicking anywhere on a product card opens details, while add to cart still works', async ({
+  page,
+}) => {
+  await page.goto('/')
+  const card = page.locator('.product-card').filter({ hasText: 'Moonlit Jasmine' })
+  await expect(card).toHaveCount(1)
+
+  await card.click({ position: { x: 40, y: 60 } })
+  const dialog = page.getByRole('dialog')
+  await expect(dialog).toBeVisible()
+  await expect(dialog.getByRole('heading', { name: 'Moonlit Jasmine' })).toBeVisible()
+  await page.keyboard.press('Escape')
+  await expect(dialog).toBeHidden()
+
+  await card.getByRole('button', { name: /Add to Cart for Moonlit Jasmine/ }).click()
+  await expect(dialog).toBeHidden()
+  await expect(page.locator('.toast')).toContainText('Moonlit Jasmine added to your cart.')
+})
+
 test('cart totals, quantity changes, free shipping threshold, persistence, and empty state', async ({
   page,
 }) => {

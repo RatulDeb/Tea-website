@@ -979,6 +979,7 @@ input[type='search']::-webkit-search-cancel-button {
 }
 
 .product-card {
+  position: relative;
   display: flex;
   flex-direction: column;
   overflow: hidden;
@@ -1185,6 +1186,21 @@ input[type='search']::-webkit-search-cancel-button {
 .card-actions .btn svg {
   width: 0.95rem;
   height: 0.95rem;
+}
+
+.product-card .card-actions .btn {
+  position: relative;
+  z-index: 4;
+}
+
+.card-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
 }
 
 .btn-add.is-added {

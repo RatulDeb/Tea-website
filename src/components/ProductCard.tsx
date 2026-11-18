@@ -37,6 +37,13 @@ export function ProductCard({ product, onViewDetails }: ProductCardProps) {
 
   return (
     <article className="product-card">
+      <button
+        type="button"
+        className="card-overlay"
+        tabIndex={-1}
+        aria-hidden="true"
+        onClick={() => onViewDetails(product)}
+      />
       <div className="product-media">
         <TeaImage src={product.image} alt={product.imageAlt} className="card-image" />
         <span className="badge badge-sale">{formatDiscount(SALE_RATE)}</span>

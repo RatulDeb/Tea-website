@@ -45,7 +45,7 @@ test('axe checkout validation state', async ({ page }) => {
     )
   })
   await page.reload()
-  await page.getByRole('button', { name: /Place demo order/ }).click()
+  await page.getByRole('button', { name: /Pay .*test mode/ }).click()
   await expect(page.getByRole('alert')).toBeVisible()
   const serious = await seriousViolations(page)
   expect(serious, JSON.stringify(serious.map((v) => v.id))).toEqual([])

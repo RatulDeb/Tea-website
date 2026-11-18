@@ -34,7 +34,7 @@
 
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 112px;
+  scroll-padding-top: 92px;
 }
 
 body {
@@ -355,7 +355,7 @@ h3 {
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  padding: 0.58rem 0;
+  padding: 0.38rem 0;
 }
 
 .announcement a {
@@ -374,7 +374,7 @@ h3 {
 
 .header-inner {
   display: flex;
-  min-height: 82px;
+  min-height: 66px;
   align-items: center;
   justify-content: space-between;
   gap: 1.4rem;
@@ -390,8 +390,8 @@ h3 {
 
 .brand-seal {
   display: grid;
-  width: 44px;
-  height: 44px;
+  width: 38px;
+  height: 38px;
   flex: none;
   place-items: center;
   border: 1px solid var(--gold);
@@ -402,8 +402,8 @@ h3 {
 }
 
 .brand-seal svg {
-  width: 22px;
-  height: 22px;
+  width: 19px;
+  height: 19px;
 }
 
 .brand-text {
@@ -414,7 +414,7 @@ h3 {
 
 .brand-name {
   font-family: var(--serif);
-  font-size: 1.45rem;
+  font-size: 1.3rem;
   letter-spacing: -0.015em;
 }
 
@@ -435,7 +435,7 @@ h3 {
 }
 
 .nav-link {
-  padding: 0.65rem 0.9rem;
+  padding: 0.5rem 0.82rem;
   border-radius: 999px;
   color: var(--forest-900);
   font-size: 0.88rem;
@@ -545,7 +545,7 @@ h3 {
 .hero {
   position: relative;
   overflow: hidden;
-  padding: clamp(2.6rem, 6vw, 5.5rem) 0 clamp(3rem, 6vw, 5rem);
+  padding: clamp(1.3rem, 2.6vw, 2.2rem) 0 clamp(1.4rem, 2.6vw, 2.2rem);
   background:
     radial-gradient(circle at 88% 12%, rgba(184, 153, 82, 0.18), transparent 34%),
     linear-gradient(140deg, #fbf7ee 0%, #f4ebd9 60%, #efe1c8 100%);
@@ -566,9 +566,9 @@ h3 {
 .hero-grid {
   position: relative;
   display: grid;
-  grid-template-columns: 1.05fr 0.95fr;
+  grid-template-columns: 1.12fr 0.88fr;
   align-items: center;
-  gap: clamp(2rem, 5vw, 4.5rem);
+  gap: clamp(1.6rem, 3.5vw, 3rem);
 }
 
 .hero-copy {
@@ -576,10 +576,10 @@ h3 {
 }
 
 .hero h1 {
-  margin-bottom: 1.35rem;
-  font-size: clamp(3rem, 6.2vw, 5.6rem);
+  margin-bottom: 0.9rem;
+  font-size: clamp(2.35rem, 4.2vw, 3.5rem);
   letter-spacing: -0.03em;
-  line-height: 0.98;
+  line-height: 1;
 }
 
 .hero h1 em {
@@ -588,10 +588,10 @@ h3 {
 }
 
 .hero-lede {
-  max-width: 35rem;
+  max-width: 33rem;
   color: var(--muted);
-  font-size: clamp(1rem, 1.4vw, 1.16rem);
-  line-height: 1.7;
+  font-size: clamp(0.96rem, 1.1vw, 1.06rem);
+  line-height: 1.6;
 }
 
 .hero-lede strong {
@@ -602,18 +602,18 @@ h3 {
 .hero-actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.75rem;
-  margin-top: 2rem;
+  gap: 0.65rem;
+  margin-top: 1rem;
 }
 
 .hero-facts {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.8rem 1.4rem;
-  margin: 1.8rem 0 0;
+  gap: 0.7rem 1.3rem;
+  margin: 1rem 0 0;
   padding: 0;
   color: var(--forest-800);
-  font-size: 0.82rem;
+  font-size: 0.78rem;
   font-weight: 600;
   list-style: none;
 }
@@ -633,16 +633,17 @@ h3 {
 .hero-media {
   position: relative;
   margin: 0;
-  border: 8px solid rgba(255, 253, 248, 0.55);
-  border-radius: 32px;
+  border: 6px solid rgba(255, 253, 248, 0.55);
+  border-radius: 26px;
   background: var(--cream-3);
   box-shadow: 0 30px 70px -40px rgba(14, 42, 31, 0.6);
 }
 
 .hero-media img {
   width: 100%;
-  aspect-ratio: 5 / 4;
-  border-radius: 24px;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  border-radius: 20px;
   object-fit: cover;
 }
 
@@ -650,7 +651,7 @@ h3 {
   position: absolute;
   inset: auto 0 0;
   height: 42%;
-  border-radius: 0 0 24px 24px;
+  border-radius: 0 0 20px 20px;
   background: linear-gradient(to top, rgba(14, 42, 31, 0.72), transparent);
   content: '';
   pointer-events: none;
@@ -680,12 +681,12 @@ h3 {
 
 .hero-stamp {
   position: absolute;
-  top: 1.2rem;
-  left: -1.4rem;
+  top: 0.85rem;
+  left: -0.9rem;
   z-index: 2;
   display: flex;
-  width: 104px;
-  height: 104px;
+  width: 88px;
+  height: 88px;
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -696,20 +697,21 @@ h3 {
   box-shadow: 0 16px 28px -18px rgba(14, 42, 31, 0.8);
   color: var(--cream);
   font-family: var(--serif);
-  font-size: 1.14rem;
+  font-size: 1rem;
   line-height: 1;
   text-align: center;
   transform: rotate(-7deg);
 }
 
 .hero-stamp svg {
-  width: 16px;
-  height: 16px;
-  margin-bottom: 0.16rem;
+  width: 14px;
+  height: 14px;
+  margin-bottom: 0.12rem;
   color: var(--gold-soft);
 }
 
 .hero-stamp small {
+  display: block;
   margin-top: 0.2rem;
   color: var(--gold-soft);
   font-family: var(--sans);
@@ -733,7 +735,7 @@ h3 {
   display: flex;
   align-items: flex-start;
   gap: 0.9rem;
-  padding: 1.5rem 2rem;
+  padding: 1.05rem 1.7rem;
   border-left: 1px solid rgba(255, 255, 255, 0.12);
 }
 
@@ -769,7 +771,31 @@ h3 {
 }
 
 .catalog-section {
-  scroll-margin-top: 100px;
+  scroll-margin-top: 84px;
+  padding-top: clamp(1.3rem, 2.2vw, 1.9rem);
+}
+
+.catalog-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem 2rem;
+  margin-bottom: 0.9rem;
+}
+
+.catalog-head .eyebrow {
+  margin-bottom: 0.5rem;
+}
+
+.catalog-head h2 {
+  font-size: clamp(1.55rem, 2.4vw, 2.05rem);
+}
+
+.catalog-lede {
+  max-width: 40ch;
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.55;
 }
 
 .catalog-toolbar {
@@ -778,7 +804,7 @@ h3 {
   align-items: flex-end;
   justify-content: space-between;
   gap: 1rem;
-  margin-bottom: 1.2rem;
+  margin-bottom: 0.7rem;
 }
 
 .search-field {
@@ -882,7 +908,7 @@ input[type='search']::-webkit-search-cancel-button {
 .category-filter {
   display: flex;
   gap: 0.5rem;
-  padding: 0.25rem 0 0.65rem;
+  padding: 0.15rem 0 0.35rem;
   overflow-x: auto;
   scrollbar-width: thin;
 }
@@ -935,8 +961,8 @@ input[type='search']::-webkit-search-cancel-button {
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  margin-bottom: 2rem;
-  padding: 0.75rem 0 1.4rem;
+  margin-bottom: 0.9rem;
+  padding: 0.4rem 0 0.75rem;
   border-bottom: 1px solid var(--line);
   color: var(--muted);
   font-size: 0.86rem;
@@ -2032,15 +2058,34 @@ input[type='search']::-webkit-search-cancel-button {
   margin-top: 0.1rem;
 }
 
+.payment-methods {
+  display: grid;
+  gap: 0.7rem;
+}
+
 .payment-option {
   display: flex;
   align-items: center;
   gap: 0.8rem;
-  padding: 1rem;
-  border: 1px solid var(--forest-700);
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--line);
   border-radius: 14px;
-  background: #f2f5ef;
+  background: var(--paper);
   cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.payment-option:hover {
+  border-color: var(--forest-700);
+}
+
+.payment-option.selected {
+  border-color: var(--forest-700);
+  background: #f2f5ef;
+  box-shadow: 0 0 0 3px rgba(43, 92, 69, 0.1);
 }
 
 .payment-option input {
@@ -2095,6 +2140,43 @@ input[type='search']::-webkit-search-cancel-button {
   margin-top: 0.6rem;
   color: var(--muted);
   font-size: 0.74rem;
+}
+
+.card-panel {
+  margin-top: 0.85rem;
+  padding: 1rem;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #fbf8f1;
+}
+
+.test-mode-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  margin-bottom: 0.9rem;
+  padding: 0.7rem 0.85rem;
+  border: 1px solid #cfe0cd;
+  border-radius: 10px;
+  background: #eef5ec;
+  color: var(--forest-900);
+  font-size: 0.8rem;
+}
+
+.test-mode-note > svg {
+  width: 17px;
+  height: 17px;
+  flex: none;
+  margin-top: 0.15rem;
+  color: var(--forest-700);
+}
+
+.test-mode-note code {
+  padding: 0.06rem 0.3rem;
+  border-radius: 4px;
+  background: rgba(20, 53, 39, 0.09);
+  font-size: 0.85em;
+  white-space: nowrap;
 }
 
 .checkout-submit {
@@ -3184,7 +3266,7 @@ input[type='search']::-webkit-search-cancel-button {
 
 @media (max-width: 1100px) {
   .hero h1 {
-    font-size: clamp(2.8rem, 5.6vw, 4.6rem);
+    font-size: clamp(2.2rem, 4.6vw, 3.3rem);
   }
 
   .service-grid {
@@ -3236,7 +3318,7 @@ input[type='search']::-webkit-search-cancel-button {
 
   .hero-grid {
     grid-template-columns: 1fr;
-    gap: 2.5rem;
+    gap: 1.8rem;
   }
 
   .hero-copy {
@@ -3245,6 +3327,14 @@ input[type='search']::-webkit-search-cancel-button {
 
   .hero-media {
     max-width: 680px;
+  }
+
+  .catalog-head {
+    display: block;
+  }
+
+  .catalog-lede {
+    margin-top: 0.55rem;
   }
 
   .benefit-grid {
@@ -3353,23 +3443,23 @@ input[type='search']::-webkit-search-cancel-button {
   }
 
   .hero {
-    padding-top: 2.2rem;
+    padding-top: 1.4rem;
   }
 
   .hero h1 {
-    font-size: clamp(2.65rem, 13vw, 3.8rem);
+    font-size: clamp(2.15rem, 10vw, 2.9rem);
   }
 
   .hero-stamp {
     top: 0.7rem;
     left: 0.7rem;
-    width: 84px;
-    height: 84px;
-    font-size: 0.94rem;
+    width: 72px;
+    height: 72px;
+    font-size: 0.86rem;
   }
 
   .hero-stamp small {
-    font-size: 0.44rem;
+    font-size: 0.42rem;
   }
 
   .hero-actions .btn {

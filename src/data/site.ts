@@ -16,7 +16,7 @@ export const siteConfig = {
   },
   demoNotes: {
     checkout:
-      'This is a demonstration checkout. No real card details are collected and no money is charged.',
+      'This is a demonstration checkout with a test-mode card gateway. No real money is charged and card details are never stored.',
     contact: 'Contact details are sample content for this demo store.',
     content: 'Service details are sample copy and should be confirmed before launch.',
   },

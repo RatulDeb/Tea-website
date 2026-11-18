@@ -190,7 +190,7 @@ test('checkout validates required fields and email, then confirms a demo order a
   await expect(summary).toContainText('$4.95')
   await expect(summary).toContainText('$17.75')
 
-  await page.getByRole('button', { name: /Place demo order/ }).click()
+  await page.getByRole('button', { name: /Pay .*test mode/ }).click()
   await expect(page.getByRole('alert')).toContainText('Please check the highlighted fields')
   await expect(page.getByLabel(/Full name/)).toBeFocused()
 
@@ -200,18 +200,24 @@ test('checkout validates required fields and email, then confirms a demo order a
   await page.getByLabel(/City or town/).fill('Portland')
   await page.getByLabel(/Postal code/).fill('97205')
   await page.getByLabel(/Country/).selectOption('United States')
-  await page.getByRole('button', { name: /Place demo order/ }).click()
+  await page.getByRole('button', { name: /Pay .*test mode/ }).click()
   await expect(page.getByText('Enter a valid email address, such as name@example.com.')).toBeVisible()
   await expect(page.getByLabel(/Email address/)).toBeFocused()
 
   await page.getByLabel(/Email address/).fill('ada@example.com')
   await expect(page.getByText('Enter a valid email address, such as name@example.com.')).toBeHidden()
 
-  await page.getByRole('button', { name: /Place demo order/ }).click()
+  await page.getByLabel(/Name on card/).fill('Ada Lovelace')
+  await page.getByLabel(/Card number/).fill('4242 4242 4242 4242')
+  await page.getByLabel(/Expiry/).fill('12/29')
+  await page.getByLabel(/CVC/).fill('123')
+
+  await page.getByRole('button', { name: /Pay .*test mode/ }).click()
   await expect(page.getByRole('heading', { name: 'Thank you, Ada.' })).toBeVisible()
   await expect(page.getByText('Demo order confirmed')).toBeVisible()
   await expect(page.locator('.order-number-box strong')).toHaveText(/^LK-\d{4}-\d{6}$/)
-  await expect(page.getByText('Demo payment')).toHaveCount(0)
+  await expect(page.locator('.confirmation-card')).toContainText('test mode')
+  await expect(page.locator('.confirmation-card')).toContainText('4242')
   await expect(page.getByText('No payment was taken and no email has been sent.')).toBeVisible()
   await expect(page.locator('.confirmation-card')).toContainText('$12.80')
   await expect(page.locator('.confirmation-card')).toContainText('$4.95')
@@ -250,7 +256,7 @@ test('mobile layout, menu, shopping, and checkout summary are usable', async ({ 
   const summaryBox = await page.locator('.checkout-summary').boundingBox()
   const formBox = await page.locator('.checkout-form').boundingBox()
   expect(summaryBox?.y ?? 0).toBeLessThan(formBox?.y ?? 0)
-  await expect(page.getByRole('button', { name: /Place demo order/ })).toBeVisible()
+  await expect(page.getByRole('button', { name: /Pay .*test mode/ })).toBeVisible()
 
   await expect(page.locator('body')).toHaveJSProperty('scrollWidth', 390)
   await expect(page.locator('body')).toHaveJSProperty('clientWidth', 390)

@@ -2,7 +2,6 @@
 import { Link, useSearchParams } from 'react-router-dom'
 import {
   ArrowRight,
-  CheckCircle2,
   Leaf,
   Search,
   ShieldCheck,
@@ -121,9 +120,9 @@ export function ShopPage() {
               Find your <em>quiet cup.</em>
             </h1>
             <p className="hero-lede">
-              Twenty considered teas and caffeine-free infusions, chosen for the
-              way they taste and the pause they make. Every 100 g pouch is{' '}
-              <strong>{formatDiscount(SALE_RATE)}</strong> for our demo launch.
+              Twenty considered teas and caffeine-free infusions, each 100 g
+              pouch at <strong>{formatDiscount(SALE_RATE)}</strong> for our demo
+              launch.
             </p>
             <div className="hero-actions">
               <a className="btn btn-primary btn-large" href="#teas">
@@ -134,16 +133,6 @@ export function ShopPage() {
                 Our teas &amp; services
               </Link>
             </div>
-            <ul className="hero-facts">
-              <li>
-                <CheckCircle2 aria-hidden="true" />
-                20 teas across six styles
-              </li>
-              <li>
-                <CheckCircle2 aria-hidden="true" />
-                Free shipping over {formatMoney(siteConfig.shipping.freeThresholdCents)}
-              </li>
-            </ul>
           </div>
 
           <figure className="hero-media">
@@ -169,41 +158,14 @@ export function ShopPage() {
         </div>
       </section>
 
-      <section className="benefit-strip" aria-label="Shop benefits">
-        <div className="shell benefit-grid">
-          <div className="benefit">
-            <Leaf aria-hidden="true" />
-            <div>
-              <h2>Twenty considered teas</h2>
-              <p>Black, green, white, oolong, fermented, and herbal.</p>
-            </div>
-          </div>
-          <div className="benefit">
-            <Truck aria-hidden="true" />
-            <div>
-              <h2>Simple demo shipping</h2>
-              <p>
-                Flat {formatMoney(siteConfig.shipping.flatRateCents)}, free over{' '}
-                {formatMoney(siteConfig.shipping.freeThresholdCents)}.
-              </p>
-            </div>
-          </div>
-          <div className="benefit">
-            <ShieldCheck aria-hidden="true" />
-            <div>
-              <h2>No-pressure checkout</h2>
-              <p>Demo orders only — no real payment details are collected.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
       <section id="teas" className="section catalog-section" aria-labelledby="catalog-heading">
         <div className="shell">
-          <div className="section-heading">
-            <p className="eyebrow">The collection</p>
-            <h2 id="catalog-heading">Twenty teas for every kind of pause</h2>
-            <p>
+          <div className="catalog-head">
+            <div>
+              <p className="eyebrow">The collection</p>
+              <h2 id="catalog-heading">Twenty teas for every kind of pause</h2>
+            </div>
+            <p className="catalog-lede">
               Browse the full shelf, search by name, or filter by style. Prices
               show the original and the 20% launch price.
             </p>
@@ -312,6 +274,35 @@ export function ShopPage() {
               </button>
             </div>
           )}
+        </div>
+      </section>
+
+      <section className="benefit-strip" aria-label="Shop benefits">
+        <div className="shell benefit-grid">
+          <div className="benefit">
+            <Leaf aria-hidden="true" />
+            <div>
+              <h2>Twenty considered teas</h2>
+              <p>Black, green, white, oolong, fermented, and herbal.</p>
+            </div>
+          </div>
+          <div className="benefit">
+            <Truck aria-hidden="true" />
+            <div>
+              <h2>Simple demo shipping</h2>
+              <p>
+                Flat {formatMoney(siteConfig.shipping.flatRateCents)}, free over{' '}
+                {formatMoney(siteConfig.shipping.freeThresholdCents)}.
+              </p>
+            </div>
+          </div>
+          <div className="benefit">
+            <ShieldCheck aria-hidden="true" />
+            <div>
+              <h2>Test-mode checkout</h2>
+              <p>Card fields run in test mode — no real money is charged.</p>
+            </div>
+          </div>
         </div>
       </section>
 

@@ -4,10 +4,12 @@ import {
   AlertCircle,
   ArrowLeft,
   ArrowRight,
+  Banknote,
   CheckCircle2,
   CreditCard,
   Info,
   LoaderCircle,
+  Lock,
   Mail,
   MapPin,
   ShieldCheck,
@@ -81,6 +83,85 @@ const initialFields: CheckoutFields = {
   country: '',
 }
 
+interface PaymentFields {
+  cardName: string
+  cardNumber: string
+  cardExpiry: string
+  cardCvc: string
+}
+
+type PaymentFieldName = keyof PaymentFields
+type PaymentErrors = Partial<Record<PaymentFieldName, string>>
+type PaymentMethod = 'card' | 'cod'
+
+const initialPayment: PaymentFields = {
+  cardName: '',
+  cardNumber: '',
+  cardExpiry: '',
+  cardCvc: '',
+}
+
+const paymentFieldIds: Record<PaymentFieldName, string> = {
+  cardName: 'checkout-card-name',
+  cardNumber: 'checkout-card-number',
+  cardExpiry: 'checkout-card-expiry',
+  cardCvc: 'checkout-card-cvc',
+}
+
+const paymentFieldOrder: PaymentFieldName[] = [
+  'cardName',
+  'cardNumber',
+  'cardExpiry',
+  'cardCvc',
+]
+
+function formatCardNumber(value: string): string {
+  const digits = value.replace(/\D/g, '').slice(0, 19)
+  return digits.replace(/(\d{4})(?=\d)/g, '$1 ')
+}
+
+function formatExpiry(value: string): string {
+  const digits = value.replace(/\D/g, '').slice(0, 4)
+  if (digits.length <= 2) return digits
+  return `${digits.slice(0, 2)}/${digits.slice(2)}`
+}
+
+function formatCvc(value: string): string {
+  return value.replace(/\D/g, '').slice(0, 4)
+}
+
+function validatePaymentField(
+  name: PaymentFieldName,
+  value: string,
+): string | undefined {
+  const trimmed = value.trim()
+  switch (name) {
+    case 'cardName':
+      return trimmed ? undefined : 'Enter the name printed on the card.'
+    case 'cardNumber': {
+      if (!trimmed) return 'Enter a card number.'
+      const digits = trimmed.replace(/\s+/g, '')
+      return /^\d{13,19}$/.test(digits)
+        ? undefined
+        : 'Enter a valid card number (13–19 digits).'
+    }
+    case 'cardExpiry': {
+      if (!trimmed) return 'Enter the expiry date.'
+      const match = /^(\d{2})\/(\d{2})$/.exec(trimmed)
+      if (!match) return 'Use MM/YY, for example 12/29.'
+      const month = Number(match[1])
+      const year = 2000 + Number(match[2])
+      if (month < 1 || month > 12) return 'Enter a month between 01 and 12.'
+      const expiryEnd = new Date(year, month, 1)
+      return expiryEnd <= new Date() ? 'This card has expired.' : undefined
+    }
+    case 'cardCvc':
+      return /^\d{3,4}$/.test(trimmed)
+        ? undefined
+        : 'Enter the 3–4 digit security code.'
+  }
+}
+
 interface OrderLine {
   id: string
   name: string
@@ -103,6 +184,8 @@ interface OrderConfirmation {
   savingsCents: number
   shippingCents: number
   totalCents: number
+  paymentLabel: string
+  cardLast4?: string
 }
 
 function validateField(name: FieldName, value: string): string | undefined {
@@ -154,6 +237,9 @@ export function CheckoutPage() {
   } = useCart()
   const [fields, setFields] = useState<CheckoutFields>(initialFields)
   const [errors, setErrors] = useState<FieldErrors>({})
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('card')
+  const [payment, setPayment] = useState<PaymentFields>(initialPayment)
+  const [paymentErrors, setPaymentErrors] = useState<PaymentErrors>({})
   const [submitAttempted, setSubmitAttempted] = useState(false)
   const [processing, setProcessing] = useState(false)
   const [order, setOrder] = useState<OrderConfirmation | null>(null)
@@ -168,7 +254,11 @@ export function CheckoutPage() {
     }
   }, [order])
 
-  const errorCount = Object.values(errors).filter(Boolean).length
+  const errorCount =
+    Object.values(errors).filter(Boolean).length +
+    (paymentMethod === 'card'
+      ? Object.values(paymentErrors).filter(Boolean).length
+      : 0)
 
   function updateField(name: FieldName, value: string) {
     setFields((current) => ({ ...current, [name]: value }))
@@ -193,11 +283,50 @@ export function CheckoutPage() {
     })
   }
 
+  function updatePaymentField(name: PaymentFieldName, value: string) {
+    const formatted =
+      name === 'cardNumber'
+        ? formatCardNumber(value)
+        : name === 'cardExpiry'
+          ? formatExpiry(value)
+          : name === 'cardCvc'
+            ? formatCvc(value)
+            : value
+    setPayment((current) => ({ ...current, [name]: formatted }))
+    if (paymentErrors[name]) {
+      setPaymentErrors((current) => {
+        const next = { ...current }
+        const error = validatePaymentField(name, formatted)
+        if (error) next[name] = error
+        else delete next[name]
+        return next
+      })
+    }
+  }
+
+  function handlePaymentBlur(name: PaymentFieldName) {
+    setPaymentErrors((current) => {
+      const next = { ...current }
+      const error = validatePaymentField(name, payment[name])
+      if (error) next[name] = error
+      else delete next[name]
+      return next
+    })
+  }
+
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
     if (processing) return
     const nextErrors = validateAll(fields)
+    const nextPaymentErrors: PaymentErrors = {}
+    if (paymentMethod === 'card') {
+      for (const name of paymentFieldOrder) {
+        const error = validatePaymentField(name, payment[name])
+        if (error) nextPaymentErrors[name] = error
+      }
+    }
     setErrors(nextErrors)
+    setPaymentErrors(nextPaymentErrors)
     setSubmitAttempted(true)
 
     const firstError = requiredFields.find((name) => nextErrors[name])
@@ -208,8 +337,19 @@ export function CheckoutPage() {
       return
     }
 
+    const firstPaymentError =
+      paymentMethod === 'card'
+        ? paymentFieldOrder.find((name) => nextPaymentErrors[name])
+        : undefined
+    if (firstPaymentError) {
+      requestAnimationFrame(() => {
+        document.getElementById(paymentFieldIds[firstPaymentError])?.focus()
+      })
+      return
+    }
+
     setProcessing(true)
-    await new Promise((resolve) => window.setTimeout(resolve, 900))
+    await new Promise((resolve) => window.setTimeout(resolve, paymentMethod === 'card' ? 1400 : 900))
 
     const nextOrder: OrderConfirmation = {
       orderNumber: createOrderNumber(),
@@ -234,6 +374,14 @@ export function CheckoutPage() {
       savingsCents,
       shippingCents,
       totalCents,
+      paymentLabel:
+        paymentMethod === 'card'
+          ? 'Card — test mode'
+          : 'Pay on delivery — demo',
+      cardLast4:
+        paymentMethod === 'card'
+          ? payment.cardNumber.replace(/\D/g, '').slice(-4) || undefined
+          : undefined,
     }
 
     clearCart()
@@ -339,6 +487,16 @@ export function CheckoutPage() {
                     <strong>{order.customer.email}</strong>
                   </div>
                 </div>
+                <div className="confirmation-contact">
+                  <CreditCard aria-hidden="true" />
+                  <div>
+                    <span>Payment</span>
+                    <strong>
+                      {order.paymentLabel}
+                      {order.cardLast4 ? ` ···· ${order.cardLast4}` : ''}
+                    </strong>
+                  </div>
+                </div>
                 <div className="confirmation-note">
                   <Info aria-hidden="true" />
                   <p>
@@ -400,8 +558,8 @@ export function CheckoutPage() {
               <p className="eyebrow">Demo checkout</p>
               <h1>Checkout</h1>
               <p className="page-subtitle">
-                No real payment details are needed. Review your order, add a
-                shipping address, and place a demonstration order.
+                Review your order, add a shipping address, and complete payment in
+                test mode. No real money is charged.
               </p>
             </div>
           </div>
@@ -619,25 +777,214 @@ export function CheckoutPage() {
 
               <fieldset className="form-section">
                 <legend>Payment</legend>
-                <label className="payment-option">
-                  <input type="radio" name="payment" value="demo" defaultChecked />
-                  <span className="payment-icon" aria-hidden="true">
-                    <CreditCard />
-                  </span>
-                  <span className="payment-copy">
-                    <strong>Demo payment</strong>
-                    <small>
-                      No card details required. No money will be charged.
-                    </small>
-                  </span>
-                  <span className="payment-check" aria-hidden="true">
-                    <ShieldCheck />
-                  </span>
-                </label>
-                <p className="payment-note">
-                  This option exists to demonstrate the checkout flow only. There
-                  are no card fields, no payment processor, and no charge.
-                </p>
+                <div className="payment-methods">
+                  <label
+                    className={`payment-option${paymentMethod === 'card' ? ' selected' : ''}`}
+                  >
+                    <input
+                      type="radio"
+                      name="paymentMethod"
+                      value="card"
+                      checked={paymentMethod === 'card'}
+                      onChange={() => setPaymentMethod('card')}
+                    />
+                    <span className="payment-icon" aria-hidden="true">
+                      <CreditCard />
+                    </span>
+                    <span className="payment-copy">
+                      <strong>Card — test gateway</strong>
+                      <small>Secure test mode. No real money is charged.</small>
+                    </span>
+                    <span className="payment-check" aria-hidden="true">
+                      <ShieldCheck />
+                    </span>
+                  </label>
+
+                  <label
+                    className={`payment-option${paymentMethod === 'cod' ? ' selected' : ''}`}
+                  >
+                    <input
+                      type="radio"
+                      name="paymentMethod"
+                      value="cod"
+                      checked={paymentMethod === 'cod'}
+                      onChange={() => setPaymentMethod('cod')}
+                    />
+                    <span className="payment-icon" aria-hidden="true">
+                      <Banknote />
+                    </span>
+                    <span className="payment-copy">
+                      <strong>Pay on delivery</strong>
+                      <small>Demo option — no cash is ever collected.</small>
+                    </span>
+                    <span className="payment-check" aria-hidden="true">
+                      <CheckCircle2 />
+                    </span>
+                  </label>
+                </div>
+
+                {paymentMethod === 'card' ? (
+                  <div className="card-panel">
+                    <div className="test-mode-note">
+                      <Lock aria-hidden="true" />
+                      <p>
+                        <strong>Test mode.</strong> Use card{' '}
+                        <code>4242 4242 4242 4242</code>, any future expiry, and
+                        any 3-digit code. Nothing is charged and card details are
+                        never stored.
+                      </p>
+                    </div>
+
+                    <div className="form-grid">
+                      <div className="field field-full">
+                        <label htmlFor={paymentFieldIds.cardName}>
+                          Name on card{' '}
+                          <span className="required-mark" aria-hidden="true">*</span>
+                          <span className="sr-only"> required</span>
+                        </label>
+                        <input
+                          id={paymentFieldIds.cardName}
+                          name="cardName"
+                          type="text"
+                          autoComplete="cc-name"
+                          value={payment.cardName}
+                          onChange={(event) =>
+                            updatePaymentField('cardName', event.target.value)
+                          }
+                          onBlur={() => handlePaymentBlur('cardName')}
+                          aria-invalid={Boolean(paymentErrors.cardName)}
+                          aria-describedby={
+                            paymentErrors.cardName
+                              ? `${paymentFieldIds.cardName}-error`
+                              : undefined
+                          }
+                          required
+                        />
+                        {paymentErrors.cardName ? (
+                          <p
+                            className="field-error"
+                            id={`${paymentFieldIds.cardName}-error`}
+                          >
+                            {paymentErrors.cardName}
+                          </p>
+                        ) : null}
+                      </div>
+
+                      <div className="field field-full">
+                        <label htmlFor={paymentFieldIds.cardNumber}>
+                          Card number{' '}
+                          <span className="required-mark" aria-hidden="true">*</span>
+                          <span className="sr-only"> required</span>
+                        </label>
+                        <input
+                          id={paymentFieldIds.cardNumber}
+                          name="cardNumber"
+                          type="text"
+                          inputMode="numeric"
+                          autoComplete="cc-number"
+                          placeholder="4242 4242 4242 4242"
+                          value={payment.cardNumber}
+                          onChange={(event) =>
+                            updatePaymentField('cardNumber', event.target.value)
+                          }
+                          onBlur={() => handlePaymentBlur('cardNumber')}
+                          aria-invalid={Boolean(paymentErrors.cardNumber)}
+                          aria-describedby={
+                            paymentErrors.cardNumber
+                              ? `${paymentFieldIds.cardNumber}-error`
+                              : undefined
+                          }
+                          required
+                        />
+                        {paymentErrors.cardNumber ? (
+                          <p
+                            className="field-error"
+                            id={`${paymentFieldIds.cardNumber}-error`}
+                          >
+                            {paymentErrors.cardNumber}
+                          </p>
+                        ) : null}
+                      </div>
+
+                      <div className="field">
+                        <label htmlFor={paymentFieldIds.cardExpiry}>
+                          Expiry (MM/YY){' '}
+                          <span className="required-mark" aria-hidden="true">*</span>
+                          <span className="sr-only"> required</span>
+                        </label>
+                        <input
+                          id={paymentFieldIds.cardExpiry}
+                          name="cardExpiry"
+                          type="text"
+                          inputMode="numeric"
+                          autoComplete="cc-exp"
+                          placeholder="12/29"
+                          value={payment.cardExpiry}
+                          onChange={(event) =>
+                            updatePaymentField('cardExpiry', event.target.value)
+                          }
+                          onBlur={() => handlePaymentBlur('cardExpiry')}
+                          aria-invalid={Boolean(paymentErrors.cardExpiry)}
+                          aria-describedby={
+                            paymentErrors.cardExpiry
+                              ? `${paymentFieldIds.cardExpiry}-error`
+                              : undefined
+                          }
+                          required
+                        />
+                        {paymentErrors.cardExpiry ? (
+                          <p
+                            className="field-error"
+                            id={`${paymentFieldIds.cardExpiry}-error`}
+                          >
+                            {paymentErrors.cardExpiry}
+                          </p>
+                        ) : null}
+                      </div>
+
+                      <div className="field">
+                        <label htmlFor={paymentFieldIds.cardCvc}>
+                          CVC{' '}
+                          <span className="required-mark" aria-hidden="true">*</span>
+                          <span className="sr-only"> required</span>
+                        </label>
+                        <input
+                          id={paymentFieldIds.cardCvc}
+                          name="cardCvc"
+                          type="text"
+                          inputMode="numeric"
+                          autoComplete="cc-csc"
+                          placeholder="123"
+                          value={payment.cardCvc}
+                          onChange={(event) =>
+                            updatePaymentField('cardCvc', event.target.value)
+                          }
+                          onBlur={() => handlePaymentBlur('cardCvc')}
+                          aria-invalid={Boolean(paymentErrors.cardCvc)}
+                          aria-describedby={
+                            paymentErrors.cardCvc
+                              ? `${paymentFieldIds.cardCvc}-error`
+                              : undefined
+                          }
+                          required
+                        />
+                        {paymentErrors.cardCvc ? (
+                          <p
+                            className="field-error"
+                            id={`${paymentFieldIds.cardCvc}-error`}
+                          >
+                            {paymentErrors.cardCvc}
+                          </p>
+                        ) : null}
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <p className="payment-note">
+                    You will pay the courier when your tea arrives. This is a
+                    demo option: no cash is collected and no courier is booked.
+                  </p>
+                )}
               </fieldset>
 
               <div className="checkout-submit">
@@ -649,18 +996,22 @@ export function CheckoutPage() {
                   {processing ? (
                     <>
                       <LoaderCircle className="spin" aria-hidden="true" />
-                      Placing demo order…
+                      {paymentMethod === 'card'
+                        ? 'Processing test payment…'
+                        : 'Placing demo order…'}
                     </>
                   ) : (
                     <>
-                      Place demo order · {formatMoney(totalCents)}
+                      {paymentMethod === 'card'
+                        ? `Pay ${formatMoney(totalCents)} (test mode)`
+                        : `Place demo order · ${formatMoney(totalCents)}`}
                       <ArrowRight aria-hidden="true" />
                     </>
                   )}
                 </button>
                 <p>
-                  By placing this order you confirm it is a demonstration. No real
-                  payment information is collected.
+                  Test-mode checkout only. No real payment is taken and card
+                  details are never stored.
                 </p>
               </div>
             </form>

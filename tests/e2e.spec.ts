@@ -1,15 +1,16 @@
 ﻿import { test, expect, type Page } from '@playwright/test'
 import { getSalePriceCents, products, SALE_RATE } from '../src/data/products'
 
-const usd = new Intl.NumberFormat('en-US', {
+const taka = new Intl.NumberFormat('en-US', {
   style: 'currency',
-  currency: 'USD',
+  currency: 'BDT',
+  currencyDisplay: 'narrowSymbol',
   minimumFractionDigits: 2,
   maximumFractionDigits: 2,
 })
 
 function money(cents: number) {
-  return usd.format(cents / 100)
+  return taka.format(cents / 100)
 }
 
 async function addProductFromShop(page: Page, name: string) {
@@ -135,31 +136,31 @@ test('cart totals, quantity changes, free shipping threshold, persistence, and e
   await expect(page.locator('.cart-line')).toHaveCount(1)
   await expect(page.locator('.cart-line')).toContainText('Brahmaputra Dawn')
   await expect(page.locator('.cart-line')).toContainText('100 g pouch')
-  await expect(page.locator('.cart-unit-price')).toContainText('$12.80 each')
-  await expect(page.locator('.cart-line-total')).toContainText('$12.80')
+  await expect(page.locator('.cart-unit-price')).toContainText('৳12.80 each')
+  await expect(page.locator('.cart-line-total')).toContainText('৳12.80')
 
   const summary = page.locator('.summary-card')
-  await expect(summary).toContainText('$12.80')
-  await expect(summary).toContainText('−$3.20')
-  await expect(summary).toContainText('$4.95')
-  await expect(summary).toContainText('$17.75')
+  await expect(summary).toContainText('৳12.80')
+  await expect(summary).toContainText('−৳3.20')
+  await expect(summary).toContainText('৳4.95')
+  await expect(summary).toContainText('৳17.75')
   await expect(summary).toContainText('already in the prices above')
 
   await page.getByRole('button', { name: 'Increase quantity of Brahmaputra Dawn' }).click()
   await expect(page.getByRole('link', { name: '2 items in cart' })).toBeVisible()
-  await expect(summary).toContainText('$25.60')
-  await expect(summary).toContainText('$30.55')
-  await expect(summary).toContainText('−$6.40')
+  await expect(summary).toContainText('৳25.60')
+  await expect(summary).toContainText('৳30.55')
+  await expect(summary).toContainText('−৳6.40')
 
   await page.reload()
   await expect(page.locator('.qty-value')).toHaveText('2')
-  await expect(summary).toContainText('$30.55')
+  await expect(summary).toContainText('৳30.55')
 
   await page.getByRole('button', { name: 'Increase quantity of Brahmaputra Dawn' }).click()
-  await expect(summary).toContainText('$38.40')
+  await expect(summary).toContainText('৳38.40')
   await expect(summary.locator('.free-shipping')).toHaveText('Free')
   await expect(summary).toContainText('Free shipping unlocked')
-  await expect(summary.locator('.summary-list')).not.toContainText('$4.95')
+  await expect(summary.locator('.summary-list')).not.toContainText('৳4.95')
 
   const stored = await page.evaluate(() =>
     window.localStorage.getItem('leaf-kettle-cart-v1'),
@@ -186,9 +187,9 @@ test('checkout validates required fields and email, then confirms a demo order a
   const summary = page.locator('.checkout-summary')
   await expect(summary).toContainText('Brahmaputra Dawn')
   await expect(summary).toContainText('Qty 1')
-  await expect(summary).toContainText('$12.80')
-  await expect(summary).toContainText('$4.95')
-  await expect(summary).toContainText('$17.75')
+  await expect(summary).toContainText('৳12.80')
+  await expect(summary).toContainText('৳4.95')
+  await expect(summary).toContainText('৳17.75')
 
   await page.getByRole('button', { name: /Pay .*test mode/ }).click()
   await expect(page.getByRole('alert')).toContainText('Please check the highlighted fields')
@@ -219,9 +220,9 @@ test('checkout validates required fields and email, then confirms a demo order a
   await expect(page.locator('.confirmation-card')).toContainText('test mode')
   await expect(page.locator('.confirmation-card')).toContainText('4242')
   await expect(page.getByText('No payment was taken and no email has been sent.')).toBeVisible()
-  await expect(page.locator('.confirmation-card')).toContainText('$12.80')
-  await expect(page.locator('.confirmation-card')).toContainText('$4.95')
-  await expect(page.locator('.confirmation-card')).toContainText('$17.75')
+  await expect(page.locator('.confirmation-card')).toContainText('৳12.80')
+  await expect(page.locator('.confirmation-card')).toContainText('৳4.95')
+  await expect(page.locator('.confirmation-card')).toContainText('৳17.75')
   await expect(page.getByRole('link', { name: '0 items in cart' })).toBeVisible()
 
   const stored = await page.evaluate(() =>

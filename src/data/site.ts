@@ -2,7 +2,7 @@ export const siteConfig = {
   brand: 'Leaf & Kettle',
   tagline: 'Tea atelier',
   locale: 'en-US',
-  currency: 'USD',
+  currency: 'BDT',
   demo: true,
   shipping: {
     freeThresholdCents: 3500,

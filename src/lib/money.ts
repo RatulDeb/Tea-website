@@ -3,6 +3,7 @@ import { siteConfig } from '../data/site'
 const currencyFormatter = new Intl.NumberFormat(siteConfig.locale, {
   style: 'currency',
   currency: siteConfig.currency,
+  currencyDisplay: 'narrowSymbol',
   minimumFractionDigits: 2,
   maximumFractionDigits: 2,
 })

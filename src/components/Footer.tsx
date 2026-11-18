@@ -1,6 +1,7 @@
 ﻿import { Link } from 'react-router-dom'
 import { Clock, Leaf, Mail, MapPin, Phone } from 'lucide-react'
 import { siteConfig } from '../data/site'
+import { formatAddress, gmailComposeUrl, googleMapsUrl, telHref } from '../lib/contact'
 import { formatMoney } from '../lib/money'
 
 const currentYear = new Date().getFullYear()
@@ -14,6 +15,13 @@ const footerLinks = [
 ]
 
 export function Footer() {
+  const address = formatAddress(siteConfig.contact.addressLines)
+  const mailUrl = gmailComposeUrl(
+    siteConfig.contact.email,
+    'Tea enquiry from the website',
+  )
+  const mapsUrl = googleMapsUrl(address)
+
   return (
     <footer className="site-footer">
       <div className="shell footer-grid">
@@ -63,17 +71,27 @@ export function Footer() {
         <div className="footer-column" aria-labelledby="footer-contact-heading">
           <h2 id="footer-contact-heading">Contact</h2>
           <address>
-            <a href={`mailto:${siteConfig.contact.email}`}>
+            <a href={mailUrl} target="_blank" rel="noopener noreferrer">
               <Mail aria-hidden="true" /> {siteConfig.contact.email}
+              <span className="sr-only">
+                {' '}
+                (opens Gmail compose in a new tab)
+              </span>
             </a>
             {siteConfig.contact.phones.map((phone) => (
-              <a key={phone} href={`tel:${phone.replace(/[^+\d]/g, '')}`}>
+              <a key={phone} href={telHref(phone)}>
                 <Phone aria-hidden="true" /> {phone}
               </a>
             ))}
             <span className="contact-line">
               <MapPin aria-hidden="true" />
-              {siteConfig.contact.addressLines.join(', ')}
+              <a href={mapsUrl} target="_blank" rel="noopener noreferrer">
+                {address}
+                <span className="sr-only">
+                  {' '}
+                  (opens Google Maps in a new tab)
+                </span>
+              </a>
             </span>
             <span className="contact-line">
               <Clock aria-hidden="true" />

@@ -24,6 +24,7 @@ import {
   type TeaProduct,
 } from '../data/products'
 import { siteConfig } from '../data/site'
+import { formatAddress, gmailComposeUrl, googleMapsUrl, telHref } from '../lib/contact'
 import { usePageTitle } from '../hooks/usePageTitle'
 import { formatDiscount, formatMoney } from '../lib/money'
 
@@ -110,6 +111,13 @@ export function ShopPage() {
 
   const hasActiveFilters = search.trim().length > 0 || category !== 'All'
   const isFiltering = search !== deferredSearch
+
+  const contactAddress = formatAddress(siteConfig.contact.addressLines)
+  const contactMailUrl = gmailComposeUrl(
+    siteConfig.contact.email,
+    'Tea enquiry from the website',
+  )
+  const contactMapsUrl = googleMapsUrl(contactAddress)
 
   return (
     <>
@@ -352,7 +360,7 @@ export function ShopPage() {
               <h3>Call us</h3>
               <p className="contact-links">
                 {siteConfig.contact.phones.map((phone) => (
-                  <a key={phone} href={`tel:${phone.replace(/[^+\d]/g, '')}`}>
+                  <a key={phone} href={telHref(phone)}>
                     {phone}
                   </a>
                 ))}
@@ -365,8 +373,16 @@ export function ShopPage() {
               </span>
               <h3>Email us</h3>
               <p className="contact-links">
-                <a href={`mailto:${siteConfig.contact.email}`}>
+                <a
+                  href={contactMailUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   {siteConfig.contact.email}
+                  <span className="sr-only">
+                    {' '}
+                    (opens Gmail compose in a new tab)
+                  </span>
                 </a>
               </p>
             </div>
@@ -377,9 +393,20 @@ export function ShopPage() {
               </span>
               <h3>Visit the shop</h3>
               <address>
-                {siteConfig.contact.addressLines.map((line) => (
-                  <span key={line}>{line}</span>
-                ))}
+                <a
+                  className="contact-address-link"
+                  href={contactMapsUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {siteConfig.contact.addressLines.map((line) => (
+                    <span key={line}>{line}</span>
+                  ))}
+                  <span className="sr-only">
+                    {' '}
+                    (opens Google Maps in a new tab)
+                  </span>
+                </a>
               </address>
             </div>
 

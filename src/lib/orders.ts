@@ -216,19 +216,31 @@ export function paymentBadgeLabel(
   return order.paymentStatus === 'paid' ? 'COD paid' : 'COD'
 }
 
-function createLocalId(): string {
+function createUuid(): string {
   const cryptoApi = globalThis.crypto
-  if (cryptoApi && 'randomUUID' in cryptoApi) {
+  if (typeof cryptoApi?.randomUUID === 'function') {
     return cryptoApi.randomUUID()
   }
-  return `local-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`
+  const bytes = new Uint8Array(16)
+  for (let index = 0; index < bytes.length; index += 1) {
+    bytes[index] = Math.floor(Math.random() * 256)
+  }
+  bytes[6] = (bytes[6] & 0x0f) | 0x40
+  bytes[8] = (bytes[8] & 0x3f) | 0x80
+  const hex = Array.from(bytes, (byte) =>
+    byte.toString(16).padStart(2, '0'),
+  ).join('')
+  return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-${hex.slice(12, 16)}-${hex.slice(16, 20)}-${hex.slice(20)}`
 }
 
-function createLocalOrder(input: OrderInput): Order {
-  const now = new Date().toISOString()
+function createLocalOrder(
+  input: OrderInput,
+  overrides: { id?: string; orderNumber?: string; createdAt?: string } = {},
+): Order {
+  const now = overrides.createdAt ?? new Date().toISOString()
   return {
-    id: createLocalId(),
-    orderNumber: input.orderNumber,
+    id: overrides.id ?? createUuid(),
+    orderNumber: overrides.orderNumber ?? input.orderNumber,
     createdAt: now,
     updatedAt: now,
     customer: input.customer,
@@ -257,36 +269,40 @@ export async function placeOrder(
   let orderNumber = input.orderNumber
 
   for (let attempt = 0; attempt < 3; attempt += 1) {
-    const { data, error } = await supabase
-      .from('orders')
-      .insert({
-        order_number: orderNumber,
-        customer_name: input.customer.fullName,
-        email: input.customer.email,
-        phone: input.customer.phone,
-        address1: input.customer.address1,
-        address2: input.customer.address2 || null,
-        city: input.customer.city,
-        postal_code: input.customer.postalCode,
-        country: input.customer.country,
-        items: input.items,
-        item_count: input.count,
-        subtotal_cents: input.subtotalCents,
-        savings_cents: input.savingsCents,
-        shipping_cents: input.shippingCents,
-        total_cents: input.totalCents,
-        payment_method: input.paymentMethod,
-        payment_status: input.paymentStatus,
-        card_last4: input.cardLast4 ?? null,
-      })
-      .select('*')
-      .single()
+    const orderId = createUuid()
+    const createdAt = new Date().toISOString()
+    const { error } = await supabase.from('orders').insert({
+      id: orderId,
+      order_number: orderNumber,
+      customer_name: input.customer.fullName,
+      email: input.customer.email,
+      phone: input.customer.phone,
+      address1: input.customer.address1,
+      address2: input.customer.address2 || null,
+      city: input.customer.city,
+      postal_code: input.customer.postalCode,
+      country: input.customer.country,
+      items: input.items,
+      item_count: input.count,
+      subtotal_cents: input.subtotalCents,
+      savings_cents: input.savingsCents,
+      shipping_cents: input.shippingCents,
+      total_cents: input.totalCents,
+      payment_method: input.paymentMethod,
+      payment_status: input.paymentStatus,
+      card_last4: input.cardLast4 ?? null,
+      created_at: createdAt,
+      updated_at: createdAt,
+    })
 
-    if (!error && data) {
-      return { persisted: true, order: rowToOrder(data as OrderRow) }
+    if (!error) {
+      return {
+        persisted: true,
+        order: createLocalOrder(input, { id: orderId, orderNumber, createdAt }),
+      }
     }
 
-    if (error && error.code !== '23505') {
+    if (error.code !== '23505') {
       return {
         persisted: false,
         order: null,

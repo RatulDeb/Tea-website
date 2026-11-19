@@ -109,6 +109,9 @@ create policy "Admins can delete orders"
 revoke all on public.orders from anon;
 grant insert on public.orders to anon, authenticated;
 grant select, update, delete on public.orders to authenticated;
+grant usage on schema public to service_role;
+grant all on public.orders to service_role;
+grant all on public.admin_users to service_role;
 
 create or replace function public.set_orders_updated_at()
 returns trigger

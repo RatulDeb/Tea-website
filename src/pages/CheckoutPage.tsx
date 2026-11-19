@@ -412,7 +412,7 @@ export function CheckoutPage() {
       }
 
       if (result.persisted) {
-        void notifyNewOrder(result.order.id)
+        await notifyNewOrder(result.order.id)
       }
 
       const nextOrder: OrderConfirmation = {

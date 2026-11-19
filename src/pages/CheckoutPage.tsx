@@ -12,6 +12,7 @@ import {
   Lock,
   Mail,
   MapPin,
+  Phone,
   ShieldCheck,
   ShoppingBag,
   Truck,
@@ -20,11 +21,21 @@ import { TeaImage } from '../components/TeaImage'
 import { siteConfig } from '../data/site'
 import { useCart } from '../hooks/useCart'
 import { usePageTitle } from '../hooks/usePageTitle'
+import { telHref } from '../lib/contact'
 import { formatMoney } from '../lib/money'
+import {
+  createOrderNumber,
+  formatOrderDate,
+  notifyNewOrder,
+  placeOrder,
+  type OrderItem,
+  type PaymentStatus,
+} from '../lib/orders'
 
 interface CheckoutFields {
   fullName: string
   email: string
+  phone: string
   address1: string
   address2: string
   city: string
@@ -36,6 +47,11 @@ type FieldName = keyof CheckoutFields
 type FieldErrors = Partial<Record<FieldName, string>>
 
 const countries = [
+  'Bangladesh',
+  'India',
+  'Pakistan',
+  'Nepal',
+  'Sri Lanka',
   'United States',
   'Canada',
   'United Kingdom',
@@ -50,13 +66,13 @@ const countries = [
   'Denmark',
   'Japan',
   'Singapore',
-  'India',
   'Other',
 ]
 
 const requiredFields: Exclude<FieldName, 'address2'>[] = [
   'fullName',
   'email',
+  'phone',
   'address1',
   'city',
   'postalCode',
@@ -66,6 +82,7 @@ const requiredFields: Exclude<FieldName, 'address2'>[] = [
 const fieldIds: Record<FieldName, string> = {
   fullName: 'checkout-full-name',
   email: 'checkout-email',
+  phone: 'checkout-phone',
   address1: 'checkout-address1',
   address2: 'checkout-address2',
   city: 'checkout-city',
@@ -76,6 +93,7 @@ const fieldIds: Record<FieldName, string> = {
 const initialFields: CheckoutFields = {
   fullName: '',
   email: '',
+  phone: '',
   address1: '',
   address2: '',
   city: '',
@@ -162,23 +180,11 @@ function validatePaymentField(
   }
 }
 
-interface OrderLine {
-  id: string
-  name: string
-  variety: string
-  size: string
-  quantity: number
-  unitSaleCents: number
-  lineSaleCents: number
-  image: string
-  imageAlt: string
-}
-
 interface OrderConfirmation {
   orderNumber: string
   placedAt: string
   customer: CheckoutFields
-  lines: OrderLine[]
+  lines: OrderItem[]
   count: number
   subtotalCents: number
   savingsCents: number
@@ -198,6 +204,11 @@ function validateField(name: FieldName, value: string): string | undefined {
       return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)
         ? undefined
         : 'Enter a valid email address, such as name@example.com.'
+    case 'phone':
+      if (!trimmed) return 'Please enter a phone number for delivery.'
+      return /^\+?[\d][\d\s()-]{5,19}$/.test(trimmed)
+        ? undefined
+        : 'Enter a phone number we can use for delivery.'
     case 'address1':
       return trimmed ? undefined : 'Please enter a street address.'
     case 'city':
@@ -220,11 +231,6 @@ function validateAll(fields: CheckoutFields): FieldErrors {
   return nextErrors
 }
 
-function createOrderNumber(): string {
-  const suffix = Math.floor(100000 + Math.random() * 900000)
-  return `LK-${new Date().getFullYear()}-${suffix}`
-}
-
 export function CheckoutPage() {
   const {
     items,
@@ -242,7 +248,9 @@ export function CheckoutPage() {
   const [paymentErrors, setPaymentErrors] = useState<PaymentErrors>({})
   const [submitAttempted, setSubmitAttempted] = useState(false)
   const [processing, setProcessing] = useState(false)
+  const [submitError, setSubmitError] = useState<string | null>(null)
   const [order, setOrder] = useState<OrderConfirmation | null>(null)
+  const [persisted, setPersisted] = useState(false)
   const confirmationHeadingRef = useRef<HTMLHeadingElement>(null)
 
   usePageTitle(order ? 'Order confirmation' : 'Demo checkout')
@@ -349,44 +357,91 @@ export function CheckoutPage() {
     }
 
     setProcessing(true)
-    await new Promise((resolve) => window.setTimeout(resolve, paymentMethod === 'card' ? 1400 : 900))
+    setSubmitError(null)
 
-    const nextOrder: OrderConfirmation = {
-      orderNumber: createOrderNumber(),
-      placedAt: new Date().toLocaleString(siteConfig.locale, {
-        dateStyle: 'medium',
-        timeStyle: 'short',
-      }),
-      customer: { ...fields },
-      lines: items.map((item) => ({
-        id: item.product.id,
-        name: item.product.name,
-        variety: item.product.variety,
-        size: item.sizeLabel,
-        quantity: item.quantity,
-        unitSaleCents: item.unitSaleCents,
-        lineSaleCents: item.lineSaleCents,
-        image: item.product.image,
-        imageAlt: item.product.imageAlt,
-      })),
-      count,
-      subtotalCents,
-      savingsCents,
-      shippingCents,
-      totalCents,
-      paymentLabel:
-        paymentMethod === 'card'
-          ? 'Card — test mode'
-          : 'Pay on delivery — demo',
-      cardLast4:
-        paymentMethod === 'card'
-          ? payment.cardNumber.replace(/\D/g, '').slice(-4) || undefined
-          : undefined,
+    const customer: CheckoutFields = {
+      fullName: fields.fullName.trim(),
+      email: fields.email.trim(),
+      phone: fields.phone.trim(),
+      address1: fields.address1.trim(),
+      address2: fields.address2.trim(),
+      city: fields.city.trim(),
+      postalCode: fields.postalCode.trim(),
+      country: fields.country.trim(),
     }
+    const orderItems: OrderItem[] = items.map((item) => ({
+      productId: item.product.id,
+      name: item.product.name,
+      variety: item.product.variety,
+      size: item.sizeLabel,
+      quantity: item.quantity,
+      unitSaleCents: item.unitSaleCents,
+      lineSaleCents: item.lineSaleCents,
+      image: item.product.image,
+      imageAlt: item.product.imageAlt,
+    }))
+    const paymentStatus: PaymentStatus =
+      paymentMethod === 'card' ? 'paid' : 'unpaid'
+    const cardLast4 =
+      paymentMethod === 'card'
+        ? payment.cardNumber.replace(/\D/g, '').slice(-4) || undefined
+        : undefined
 
-    clearCart()
-    setOrder(nextOrder)
-    setProcessing(false)
+    try {
+      const result = await placeOrder({
+        orderNumber: createOrderNumber(),
+        customer,
+        items: orderItems,
+        count,
+        subtotalCents,
+        savingsCents,
+        shippingCents,
+        totalCents,
+        paymentMethod,
+        paymentStatus,
+        cardLast4,
+      })
+
+      if (!result.order) {
+        setSubmitError(
+          result.error ??
+            'We could not save your order. Please try again, or contact us by phone.',
+        )
+        setProcessing(false)
+        return
+      }
+
+      if (result.persisted) {
+        void notifyNewOrder(result.order.id)
+      }
+
+      const nextOrder: OrderConfirmation = {
+        orderNumber: result.order.orderNumber,
+        placedAt: formatOrderDate(result.order.createdAt),
+        customer,
+        lines: result.order.items,
+        count: result.order.count,
+        subtotalCents: result.order.subtotalCents,
+        savingsCents: result.order.savingsCents,
+        shippingCents: result.order.shippingCents,
+        totalCents: result.order.totalCents,
+        paymentLabel:
+          paymentMethod === 'card'
+            ? 'Card — test mode'
+            : 'Pay on delivery — demo',
+        cardLast4: result.order.cardLast4 ?? undefined,
+      }
+
+      clearCart()
+      setPersisted(result.persisted)
+      setOrder(nextOrder)
+      setProcessing(false)
+    } catch {
+      setSubmitError(
+        'We could not save your order. Please check your connection and try again, or contact us by phone.',
+      )
+      setProcessing(false)
+    }
   }
 
   if (order) {
@@ -405,17 +460,20 @@ export function CheckoutPage() {
             <span className="confirmation-icon" aria-hidden="true">
               <CheckCircle2 />
             </span>
-            <p className="eyebrow">Demo order confirmed</p>
+            <p className="eyebrow">
+              {persisted ? 'Order received' : 'Demo order confirmed'}
+            </p>
             <h1 tabIndex={-1} ref={confirmationHeadingRef}>
               Thank you, {firstName}.
             </h1>
             <p className="confirmation-lede">
-              Your demonstration order is complete. The cart has been cleared and
-              a sample order number has been created for this demo.
+              {persisted
+                ? 'Your order is in and saved for the shop. We will confirm it with you by phone or email shortly.'
+                : 'Your demonstration order is complete. The cart has been cleared and a sample order number has been created for this demo.'}
             </p>
 
             <div className="order-number-box">
-              <span>Sample order number</span>
+              <span>{persisted ? 'Order number' : 'Sample order number'}</span>
               <strong>{order.orderNumber}</strong>
               <span className="order-meta">
                 {order.placedAt} · {order.count} {order.count === 1 ? 'item' : 'items'}
@@ -427,7 +485,7 @@ export function CheckoutPage() {
                 <h2 id="confirmation-summary-heading">Order summary</h2>
                 <ul className="confirmation-lines">
                   {order.lines.map((line) => (
-                    <li key={`${line.id}-${line.size}`}>
+                    <li key={`${line.productId}-${line.size}`}>
                       <TeaImage
                         src={line.image}
                         alt={line.imageAlt}
@@ -488,6 +546,17 @@ export function CheckoutPage() {
                   </div>
                 </div>
                 <div className="confirmation-contact">
+                  <Phone aria-hidden="true" />
+                  <div>
+                    <span>Delivery phone</span>
+                    <strong>
+                      <a href={telHref(order.customer.phone)}>
+                        {order.customer.phone}
+                      </a>
+                    </strong>
+                  </div>
+                </div>
+                <div className="confirmation-contact">
                   <CreditCard aria-hidden="true" />
                   <div>
                     <span>Payment</span>
@@ -500,9 +569,9 @@ export function CheckoutPage() {
                 <div className="confirmation-note">
                   <Info aria-hidden="true" />
                   <p>
-                    This is a demonstration order. No payment was taken and no
-                    email has been sent. Keep the sample order number for
-                    reference.
+                    {persisted
+                      ? 'Your order has been recorded for the shop. This demo checkout does not charge a real card; the shop will confirm payment and delivery with you directly.'
+                      : 'This is a demonstration order. No payment was taken and no email has been sent. Keep the sample order number for reference.'}
                   </p>
                 </div>
               </section>
@@ -640,6 +709,34 @@ export function CheckoutPage() {
                     {errors.email ? (
                       <p className="field-error" id={`${fieldIds.email}-error`}>
                         {errors.email}
+                      </p>
+                    ) : null}
+                  </div>
+
+                  <div className="field field-full">
+                    <label htmlFor={fieldIds.phone}>
+                      Phone number <span className="required-mark" aria-hidden="true">*</span>
+                      <span className="sr-only"> required</span>
+                    </label>
+                    <input
+                      id={fieldIds.phone}
+                      name="phone"
+                      type="tel"
+                      inputMode="tel"
+                      autoComplete="tel"
+                      placeholder="+880 1XXX-XXXXXX"
+                      value={fields.phone}
+                      onChange={(event) => updateField('phone', event.target.value)}
+                      onBlur={() => handleBlur('phone')}
+                      aria-invalid={Boolean(errors.phone)}
+                      aria-describedby={
+                        errors.phone ? `${fieldIds.phone}-error` : undefined
+                      }
+                      required
+                    />
+                    {errors.phone ? (
+                      <p className="field-error" id={`${fieldIds.phone}-error`}>
+                        {errors.phone}
                       </p>
                     ) : null}
                   </div>
@@ -986,6 +1083,13 @@ export function CheckoutPage() {
                   </p>
                 )}
               </fieldset>
+
+              {submitError ? (
+                <div className="form-alert" role="alert">
+                  <AlertCircle aria-hidden="true" />
+                  <p>{submitError}</p>
+                </div>
+              ) : null}
 
               <div className="checkout-submit">
                 <button

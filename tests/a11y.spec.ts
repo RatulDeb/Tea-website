@@ -8,11 +8,14 @@ async function seriousViolations(page: import('@playwright/test').Page) {
   return results.violations.filter((v) => v.impact === 'serious' || v.impact === 'critical')
 }
 
-const pages = ['/', '/teas', '/cart', '/checkout', '/credits', '/missing-page']
+const pages = ['/', '/teas', '/cart', '/checkout', '/credits', '/admin', '/missing-page']
 
 for (const path of pages) {
   test(`axe ${path}`, async ({ page }) => {
     await page.goto(path)
+    if (path === '/admin') {
+      await page.locator('h1').waitFor()
+    }
     if (path === '/cart' || path === '/checkout') {
       await page.evaluate(() => {
         window.localStorage.setItem(

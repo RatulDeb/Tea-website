@@ -3,6 +3,7 @@ import { Clock, Leaf, Mail, MapPin, Phone } from 'lucide-react'
 import { siteConfig } from '../data/site'
 import { formatAddress, gmailComposeUrl, googleMapsUrl, telHref } from '../lib/contact'
 import { formatMoney } from '../lib/money'
+import { isSupabaseConfigured } from '../lib/supabase'
 
 const currentYear = new Date().getFullYear()
 
@@ -40,8 +41,9 @@ export function Footer() {
             generous pouches from 250 g to 5 kg for everyday rituals.
           </p>
           <p className="footer-demo-note">
-            This is a demo storefront. Sample content only; no orders or payments
-            are processed.
+            {isSupabaseConfigured
+              ? 'This demo store records your order for the shop, but no real card payments are processed.'
+              : 'This is a demo storefront. Sample content only; no orders or payments are processed.'}
           </p>
         </div>
 

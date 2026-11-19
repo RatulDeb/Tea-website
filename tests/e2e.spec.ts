@@ -238,6 +238,7 @@ test('checkout validates required fields and email, then confirms a demo order a
 
   await page.getByLabel(/Full name/).fill('Ada Lovelace')
   await page.getByLabel(/Email address/).fill('not-an-email')
+  await page.getByLabel(/Phone number/).fill('+880 1712-345678')
   await page.getByLabel(/Street address/).fill('12 Tea Garden Lane')
   await page.getByLabel(/City or town/).fill('Portland')
   await page.getByLabel(/Postal code/).fill('97205')

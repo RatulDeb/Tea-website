@@ -155,8 +155,12 @@ function asPaymentStatus(value: string): PaymentStatus {
 }
 
 export function createOrderNumber(): string {
-  const suffix = Math.floor(100000 + Math.random() * 900000)
-  return `LK-${new Date().getFullYear()}-${suffix}`
+  const chars = '23456789ABCDEFGHJKLMNPQRSTUVWXYZ'
+  let id = ''
+  for (let i = 0; i < 10; i += 1) {
+    id += chars[Math.floor(Math.random() * chars.length)]
+  }
+  return id
 }
 
 export function rowToOrder(row: OrderRow): Order {

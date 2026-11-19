@@ -470,8 +470,8 @@ export function AdminDashboard({ session }: { session: Session }) {
               type="search"
               value={search}
               onChange={(event) => setSearch(event.target.value)}
-              placeholder="Search order, name, phone, or address"
-              aria-label="Search orders"
+              placeholder="Search by Order ID, customer, phone, or city…"
+              aria-label="Search by order ID, customer name, phone, or address"
             />
           </div>
 

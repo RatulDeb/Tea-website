@@ -383,3 +383,30 @@ export async function deleteOrder(id: string): Promise<void> {
   const { error } = await supabase.from('orders').delete().eq('id', id)
   if (error) throw new Error(error.message)
 }
+
+export async function cancelOrder(
+  orderId: string,
+  email: string,
+): Promise<{ ok: boolean; error?: string }> {
+  try {
+    const response = await fetch('/api/cancel-order', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ orderId, email }),
+    })
+    const payload: unknown = await response.json()
+    if (!response.ok) {
+      const message =
+        payload && typeof payload === 'object' && 'error' in payload
+          ? String((payload as { error: unknown }).error)
+          : 'Could not cancel the order. Please contact us.'
+      return { ok: false, error: message }
+    }
+    return { ok: true }
+  } catch {
+    return {
+      ok: false,
+      error: 'Could not reach the server. Check your connection and try again.',
+    }
+  }
+}

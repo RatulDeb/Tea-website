@@ -1,4 +1,4 @@
-﻿:root {
+:root {
   --forest-950: #0e2a1f;
   --forest-900: #143a2b;
   --forest-800: #1d4a37;
@@ -2371,6 +2371,11 @@ input[type='search']::-webkit-search-cancel-button {
   color: var(--green-save);
 }
 
+.confirmation-icon.confirmation-icon--cancelled {
+  background: #fbeae8;
+  color: #b91c1c;
+}
+
 .confirmation-icon svg {
   width: 34px;
   height: 34px;
@@ -2564,6 +2569,35 @@ input[type='search']::-webkit-search-cancel-button {
   justify-content: center;
   gap: 0.75rem;
   margin-top: 2rem;
+}
+
+.cancel-order-section {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px dashed var(--line);
+}
+
+.btn-danger {
+  background: #dc2626;
+  border-color: #dc2626;
+  color: #fff;
+}
+
+.btn-danger:hover {
+  background: #b91c1c;
+  border-color: #b91c1c;
+  color: #fff;
+}
+
+.cancel-hint {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin: 0;
 }
 
 .info-hero {

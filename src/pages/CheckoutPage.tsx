@@ -1,9 +1,10 @@
-﻿import { useEffect, useRef, useState, type FormEvent } from 'react'
+import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
 import {
   AlertCircle,
   ArrowLeft,
   ArrowRight,
+  Ban,
   Banknote,
   CheckCircle2,
   CreditCard,
@@ -24,6 +25,7 @@ import { usePageTitle } from '../hooks/usePageTitle'
 import { telHref } from '../lib/contact'
 import { formatMoney } from '../lib/money'
 import {
+  cancelOrder,
   createOrderNumber,
   formatOrderDate,
   notifyNewOrder,
@@ -181,6 +183,7 @@ function validatePaymentField(
 }
 
 interface OrderConfirmation {
+  orderId: string
   orderNumber: string
   placedAt: string
   customer: CheckoutFields
@@ -251,6 +254,9 @@ export function CheckoutPage() {
   const [submitError, setSubmitError] = useState<string | null>(null)
   const [order, setOrder] = useState<OrderConfirmation | null>(null)
   const [persisted, setPersisted] = useState(false)
+  const [cancelled, setCancelled] = useState(false)
+  const [cancelling, setCancelling] = useState(false)
+  const [cancelError, setCancelError] = useState<string | null>(null)
   const confirmationHeadingRef = useRef<HTMLHeadingElement>(null)
 
   usePageTitle(order ? 'Order confirmation' : 'Demo checkout')
@@ -261,6 +267,19 @@ export function CheckoutPage() {
       confirmationHeadingRef.current?.focus({ preventScroll: true })
     }
   }, [order])
+
+  async function handleCancel() {
+    if (!order || cancelling || cancelled) return
+    setCancelling(true)
+    setCancelError(null)
+    const result = await cancelOrder(order.orderId, order.customer.email)
+    if (result.ok) {
+      setCancelled(true)
+    } else {
+      setCancelError(result.error ?? 'Could not cancel the order.')
+    }
+    setCancelling(false)
+  }
 
   const errorCount =
     Object.values(errors).filter(Boolean).length +
@@ -416,6 +435,7 @@ export function CheckoutPage() {
       }
 
       const nextOrder: OrderConfirmation = {
+        orderId: result.order.id,
         orderNumber: result.order.orderNumber,
         placedAt: formatOrderDate(result.order.createdAt),
         customer,
@@ -457,19 +477,25 @@ export function CheckoutPage() {
       <section className="section confirmation-page">
         <div className="shell narrow">
           <div className="confirmation-card">
-            <span className="confirmation-icon" aria-hidden="true">
-              <CheckCircle2 />
+            <span className={`confirmation-icon${cancelled ? ' confirmation-icon--cancelled' : ''}`} aria-hidden="true">
+              {cancelled ? <Ban /> : <CheckCircle2 />}
             </span>
             <p className="eyebrow">
-              {persisted ? 'Order received' : 'Demo order confirmed'}
+              {cancelled
+                ? 'Order cancelled'
+                : persisted
+                  ? 'Order received'
+                  : 'Demo order confirmed'}
             </p>
             <h1 tabIndex={-1} ref={confirmationHeadingRef}>
-              Thank you, {firstName}.
+              {cancelled ? 'Your order has been cancelled.' : `Thank you, ${firstName}.`}
             </h1>
             <p className="confirmation-lede">
-              {persisted
-                ? 'Your order is in and saved for the shop. We will confirm it with you by phone or email shortly.'
-                : 'Your demonstration order is complete. The cart has been cleared and a sample order number has been created for this demo.'}
+              {cancelled
+                ? 'This order has been cancelled. No payment will be charged and no delivery will be made.'
+                : persisted
+                  ? 'Your order is in and saved for the shop. We will confirm it with you by phone or email shortly.'
+                  : 'Your demonstration order is complete. The cart has been cleared and a sample order number has been created for this demo.'}
             </p>
 
             <div className="order-number-box">
@@ -585,6 +611,37 @@ export function CheckoutPage() {
               <Link className="btn btn-secondary btn-large" to="/teas">
                 Explore the tea guide
               </Link>
+              {persisted && !cancelled ? (
+                <div className="cancel-order-section">
+                  {cancelError ? (
+                    <div className="form-alert" role="alert">
+                      <AlertCircle aria-hidden="true" />
+                      <p>{cancelError}</p>
+                    </div>
+                  ) : null}
+                  <button
+                    type="button"
+                    className="btn btn-danger btn-large"
+                    onClick={handleCancel}
+                    disabled={cancelling}
+                  >
+                    {cancelling ? (
+                      <>
+                        <LoaderCircle className="spin" aria-hidden="true" />
+                        Cancelling…
+                      </>
+                    ) : (
+                      <>
+                        <Ban aria-hidden="true" />
+                        Cancel this order
+                      </>
+                    )}
+                  </button>
+                  <p className="cancel-hint">
+                    Changed your mind? You can cancel while the order is still new.
+                  </p>
+                </div>
+              ) : null}
             </div>
           </div>
         </div>

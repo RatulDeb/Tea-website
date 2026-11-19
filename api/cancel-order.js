@@ -1,5 +1,40 @@
+const TELEGRAM_API = 'https://api.telegram.org'
 const ORDER_ID_PATTERN =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+
+function money(cents) {
+  return `৳${(Number(cents || 0) / 100).toFixed(2)}`
+}
+
+function formatCancellationMessage(order) {
+  const items = Array.isArray(order.items) ? order.items : []
+  const itemLines = items.map(
+    (item) =>
+      `- ${item.name} (${item.size}) x ${item.quantity} - ${money(
+        item.lineSaleCents,
+      )}`,
+  )
+
+  const time = new Date().toLocaleString('en-US', {
+    timeZone: 'Asia/Dhaka',
+    dateStyle: 'medium',
+    timeStyle: 'short',
+  })
+
+  return [
+    `⚠️ Order Cancelled: ${order.order_number}`,
+    '',
+    `Customer: ${order.customer_name}`,
+    `Phone: ${order.phone}`,
+    `Email: ${order.email}`,
+    '',
+    'Cancelled Items:',
+    ...itemLines,
+    '',
+    `Total: ${money(order.total_cents)}`,
+    `Cancelled at: ${time}`,
+  ].join('\n')
+}
 
 function readBody(request) {
   if (request.body && typeof request.body === 'object') return request.body
@@ -47,7 +82,7 @@ export default async function handler(request, response) {
 
   const orderUrl = new URL(`${supabaseUrl}/rest/v1/orders`)
   orderUrl.searchParams.set('id', `eq.${orderId}`)
-  orderUrl.searchParams.set('select', 'id,email,status,order_number')
+  orderUrl.searchParams.set('select', '*')
 
   const orderResponse = await fetch(orderUrl, {
     headers: {
@@ -98,6 +133,25 @@ export default async function handler(request, response) {
   if (!patchResponse.ok) {
     response.status(502).json({ error: 'Could not cancel the order.' })
     return
+  }
+
+  const botToken = process.env.TELEGRAM_BOT_TOKEN
+  const chatId = process.env.TELEGRAM_CHAT_ID
+
+  if (botToken && chatId) {
+    try {
+      await fetch(`${TELEGRAM_API}/bot${botToken}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: chatId,
+          text: formatCancellationMessage(order),
+          disable_web_page_preview: true,
+        }),
+      })
+    } catch {
+      // Continue even if Telegram delivery fails
+    }
   }
 
   response.status(200).json({ ok: true, orderNumber: order.order_number })

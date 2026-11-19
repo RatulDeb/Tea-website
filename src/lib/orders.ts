@@ -381,11 +381,23 @@ export async function updateOrder(
   return rowToOrder(data as OrderRow)
 }
 
-export async function deleteOrder(id: string): Promise<void> {
+export async function deleteOrder(id: string, orderNumber?: string): Promise<void> {
   if (!supabase) throw new Error('Supabase is not configured.')
 
   const { error } = await supabase.from('orders').delete().eq('id', id)
   if (error) throw new Error(error.message)
+
+  if (orderNumber) {
+    try {
+      await fetch('/api/notify-admin-delete', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ orderNumber }),
+      })
+    } catch {
+      // Don't fail deletion if Telegram alert fails
+    }
+  }
 }
 
 export async function cancelOrder(

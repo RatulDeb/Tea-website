@@ -306,7 +306,7 @@ export function AdminDashboard({ session }: { session: Session }) {
     setSavingId(order.id)
     setError(null)
     try {
-      await deleteOrder(order.id)
+      await deleteOrder(order.id, order.orderNumber)
       setOrders((current) => current.filter((item) => item.id !== order.id))
       showToast(`${order.orderNumber} deleted.`)
     } catch (deleteError) {

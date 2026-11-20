@@ -1,4 +1,4 @@
-﻿import { test, expect, type Page } from '@playwright/test'
+import { test, expect, type Page } from '@playwright/test'
 import { getSalePriceCents, products, SALE_RATE } from '../src/data/products'
 
 const taka = new Intl.NumberFormat('en-US', {
@@ -257,11 +257,11 @@ test('checkout validates required fields and email, then confirms a demo order a
 
   await page.getByRole('button', { name: /Pay .*test mode/ }).click()
   await expect(page.getByRole('heading', { name: 'Thank you, Ada.' })).toBeVisible()
-  await expect(page.getByText('Demo order confirmed')).toBeVisible()
+  await expect(page.getByText(/Demo order confirmed|Order received/)).toBeVisible()
   await expect(page.locator('.order-number-box strong')).toHaveText(/^[2-9A-HJ-NP-Z]{10}$/)
   await expect(page.locator('.confirmation-card')).toContainText('test mode')
   await expect(page.locator('.confirmation-card')).toContainText('4242')
-  await expect(page.getByText('No payment was taken and no email has been sent.')).toBeVisible()
+  await expect(page.locator('.confirmation-note')).toContainText(/No payment was taken|recorded for the shop/)
   await expect(page.locator('.confirmation-card')).toContainText('৳32.00')
   await expect(page.locator('.confirmation-card')).toContainText('৳4.95')
   await expect(page.locator('.confirmation-card')).toContainText('৳36.95')

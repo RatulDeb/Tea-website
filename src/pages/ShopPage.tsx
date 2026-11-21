@@ -115,7 +115,6 @@ export function ShopPage() {
         <div className="shell hero-grid">
           <div className="hero-copy">
             <p className="eyebrow">
-              <span className="eyebrow-line" aria-hidden="true" />
               Loose leaf · 250 g to 5 kg
             </p>
             <h1>
@@ -153,7 +152,6 @@ export function ShopPage() {
               </span>
             </div>
             <figcaption>
-              <span className="caption-rule" aria-hidden="true" />
               A tea garden at dusk
             </figcaption>
           </figure>

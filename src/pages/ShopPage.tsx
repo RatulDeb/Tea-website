@@ -9,6 +9,7 @@ import {
   Truck,
   X,
 } from 'lucide-react'
+import { HeroBackdrop } from '../components/HeroBackdrop'
 import { ProductCard } from '../components/ProductCard'
 import { ProductModal } from '../components/ProductModal'
 import {
@@ -110,6 +111,7 @@ export function ShopPage() {
   return (
     <>
       <section className="hero">
+        <HeroBackdrop />
         <div className="shell hero-grid">
           <div className="hero-copy">
             <p className="eyebrow">

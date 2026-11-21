@@ -572,20 +572,20 @@ h3 {
 
 .hero-image-bg {
   position: absolute;
-  inset: -10px;
+  inset: -40px; /* Increased inset to allow for more movement without edges showing */
   background-size: cover;
   background-position: center;
   filter: brightness(0.78) contrast(1.05);
-  transform: scale(1.02);
-  animation: subtleZoom 20s ease-in-out infinite alternate;
+  transform: scale(1);
+  animation: dynamicHeroMove 12s ease-in-out infinite alternate;
 }
 
-@keyframes subtleZoom {
+@keyframes dynamicHeroMove {
   0% {
-    transform: scale(1.02);
+    transform: scale(1) translateX(0) translateY(0);
   }
   100% {
-    transform: scale(1.08);
+    transform: scale(1.12) translateX(-15px) translateY(-10px);
   }
 }
 

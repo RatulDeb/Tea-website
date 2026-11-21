@@ -551,204 +551,44 @@ h3 {
     linear-gradient(140deg, #fbf7ee 0%, #f4ebd9 60%, #efe1c8 100%);
 }
 
-/* Hero Backdrop - Tea Garden Scene */
+/* Hero Backdrop - Sreemangal Tea Garden Image Background */
 .hero-backdrop {
   position: absolute;
   inset: 0;
   z-index: 0;
-  background:
-    linear-gradient(180deg, #a8d5ba 0%, #7cb486 25%, #5a9c63 50%, #3d804a 75%, #2d6638 100%);
+  background: var(--forest-950);
   overflow: hidden;
 }
 
-.hero-sky {
+.hero-image-bg {
   position: absolute;
-  inset: -50% 0 0;
-  background: linear-gradient(180deg,
-    #ffecd2 0%,
-    #fcb69f 15%,
-    #e8b889 30%,
-    #d4a574 45%,
-    #c49460 60%,
-    #b88450 75%,
-    #a8743f 90%,
-    #9e6436 100%
-  );
-  animation: skyShift 20s ease-in-out infinite alternate;
+  inset: -10px;
+  background-size: cover;
+  background-position: center;
+  filter: brightness(0.78) contrast(1.05);
+  transform: scale(1.02);
+  animation: subtleZoom 20s ease-in-out infinite alternate;
 }
 
-@keyframes skyShift {
+@keyframes subtleZoom {
   0% {
-    filter: hue-rotate(0deg) brightness(1.1);
+    transform: scale(1.02);
   }
   100% {
-    filter: hue-rotate(15deg) brightness(1);
+    transform: scale(1.08);
   }
 }
 
-.hero-sun {
-  position: absolute;
-  top: 8%;
-  right: 10%;
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  background: radial-gradient(circle,
-    #fff7e6 0%,
-    rgba(255, 235, 180, 0.8) 30%,
-    rgba(255, 200, 120, 0.4) 60%,
-    transparent 80%
-  );
-  box-shadow: 0 0 60px 30px rgba(255, 180, 100, 0.3);
-  animation: sunGlow 8s ease-in-out infinite alternate;
-}
-
-@keyframes sunGlow {
-  0% {
-    opacity: 0.85;
-    transform: scale(1);
-    box-shadow: 0 0 60px 30px rgba(255, 180, 100, 0.3);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1.05);
-    box-shadow: 0 0 80px 40px rgba(255, 190, 110, 0.4);
-  }
-}
-
-.hero-hills {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0.95;
-}
-
-.hero-hill {
-  transition: fill 4s ease-in-out;
-}
-
-.hero-hill-far {
-  fill: #6bac5e;
-  animation: hillParallax 25s ease-in-out infinite;
-}
-
-.hero-hill-mid {
-  fill: #4a9d48;
-  animation: hillParallax 20s ease-in-out infinite reverse;
-}
-
-.hero-hill-near {
-  fill: #3d804a;
-  animation: hillParallax 15s ease-in-out infinite;
-}
-
-@keyframes hillParallax {
-  0%, 100% {
-    transform: translateX(0);
-    opacity: 1;
-  }
-  25% {
-    transform: translateX(-2px);
-    opacity: 0.98;
-  }
-  50% {
-    transform: translateX(1px);
-    opacity: 1;
-  }
-  75% {
-    transform: translateX(-1px);
-    opacity: 0.98;
-  }
-}
-
-.hero-terraces {
-  stroke: #2d5a3a;
-  stroke-width: 1;
-  fill: none;
-  animation: terraceFade 6s ease-in-out infinite;
-}
-
-@keyframes terraceFade {
-  0%, 100% {
-    opacity: 0.6;
-  }
-  50% {
-    opacity: 1;
-  }
-}
-
-.hero-mist {
+.hero-image-overlay {
   position: absolute;
   inset: 0;
-  background: linear-gradient(90deg,
-    transparent 0%,
-    rgba(255, 255, 255, 0.15) 25%,
-    rgba(255, 255, 255, 0.2) 50%,
-    rgba(255, 255, 255, 0.15) 75%,
-    transparent 100%
+  background: linear-gradient(
+    135deg,
+    rgba(14, 42, 31, 0.6) 0%,
+    rgba(20, 58, 43, 0.4) 50%,
+    rgba(14, 42, 31, 0.7) 100%
   );
   pointer-events: none;
-}
-
-.hero-mist-a {
-  animation: mistFlow1 18s ease-in-out infinite;
-}
-
-.hero-mist-b {
-  animation: mistFlow2 22s ease-in-out infinite reverse;
-}
-
-@keyframes mistFlow1 {
-  0% {
-    transform: translateX(-100%) translateY(0) scale(1.1);
-    opacity: 0.3;
-  }
-  50% {
-    transform: translateX(0%) translateY(-20px) scale(1);
-    opacity: 0.6;
-  }
-  100% {
-    transform: translateX(100%) translateY(0) scale(1.1);
-    opacity: 0.3;
-  }
-}
-
-@keyframes mistFlow2 {
-  0% {
-    transform: translateX(100%) translateY(10px) scale(1.1);
-    opacity: 0.25;
-  }
-  50% {
-    transform: translateX(0%) translateY(-10px) scale(1);
-    opacity: 0.45;
-  }
-  100% {
-    transform: translateX(-100%) translateY(10px) scale(1.1);
-    opacity: 0.25;
-  }
-}
-
-.hero-haze {
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(ellipse at 30% 80%, rgba(255, 240, 200, 0.25) 0%, transparent 40%),
-    radial-gradient(ellipse at 70% 70%, rgba(255, 220, 150, 0.2) 0%, transparent 35%),
-    radial-gradient(ellipse at 45% 85%, rgba(255, 250, 220, 0.3) 0%, transparent 45%);
-  animation: hazeMove 12s ease-in-out infinite;
-}
-
-@keyframes hazeMove {
-  0%, 100% {
-    transform: scale(1) translate(0, 0);
-    opacity: 0.7;
-  }
-  50% {
-    transform: scale(1.05) translate(5px, -5px);
-    opacity: 0.85;
-  }
 }
 
 .hero::before {

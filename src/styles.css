@@ -186,6 +186,16 @@ h3 {
   text-transform: uppercase;
 }
 
+.hero .eyebrow {
+  color: var(--gold-soft);
+  text-shadow: 0 1px 8px rgba(14, 42, 31, 0.5);
+}
+
+.hero .eyebrow-line {
+  background: var(--gold-soft);
+  box-shadow: 0 0 8px var(--gold-soft);
+}
+
 .section-heading:not(.section-heading-left) .eyebrow {
   justify-content: center;
 }
@@ -620,23 +630,28 @@ h3 {
   font-size: clamp(2.35rem, 4.2vw, 3.5rem);
   letter-spacing: -0.03em;
   line-height: 1;
+  color: var(--cream);
+  text-shadow: 0 2px 24px rgba(14, 42, 31, 0.6), 0 1px 4px rgba(14, 42, 31, 0.4);
 }
 
 .hero h1 em {
-  color: var(--forest-700);
+  color: var(--gold-soft);
   font-style: italic;
+  text-shadow: 0 2px 16px rgba(184, 153, 82, 0.5);
 }
 
 .hero-lede {
   max-width: 33rem;
-  color: var(--muted);
+  color: var(--cream-2);
   font-size: clamp(0.96rem, 1.1vw, 1.06rem);
-  line-height: 1.6;
+  line-height: 1.7;
+  text-shadow: 0 1px 12px rgba(14, 42, 31, 0.5);
 }
 
 .hero-lede strong {
-  color: var(--terracotta);
+  color: var(--gold);
   font-weight: 700;
+  text-shadow: 0 1px 8px rgba(184, 153, 82, 0.4);
 }
 
 .hero-actions {
@@ -646,13 +661,38 @@ h3 {
   margin-top: 1rem;
 }
 
+.hero-actions .btn-primary {
+  background: var(--gold);
+  color: var(--forest-950);
+  box-shadow: 0 12px 28px -16px rgba(184, 153, 82, 0.6);
+  border: 2px solid var(--gold);
+}
+
+.hero-actions .btn-primary:hover {
+  background: var(--gold-soft);
+  transform: translateY(-2px);
+  box-shadow: 0 16px 36px -20px rgba(184, 153, 82, 0.7);
+}
+
+.hero-actions .btn-secondary {
+  background: transparent;
+  border-color: var(--cream-2);
+  color: var(--cream);
+}
+
+.hero-actions .btn-secondary:hover {
+  background: var(--cream);
+  color: var(--forest-950);
+  border-color: var(--cream);
+}
+
 .hero-facts {
   display: flex;
   flex-wrap: wrap;
   gap: 0.7rem 1.3rem;
-  margin: 1rem 0 0;
+  margin: 1.25rem 0 0;
   padding: 0;
-  color: var(--forest-800);
+  color: var(--cream-3);
   font-size: 0.78rem;
   font-weight: 600;
   list-style: none;
@@ -667,7 +707,7 @@ h3 {
 .hero-facts svg {
   width: 17px;
   height: 17px;
-  color: var(--forest-700);
+  color: var(--gold-soft);
 }
 
 .hero-media {

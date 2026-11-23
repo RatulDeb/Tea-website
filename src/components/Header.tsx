@@ -3,7 +3,6 @@ import { Link, NavLink } from 'react-router-dom'
 import { Menu, ShoppingBag, X } from 'lucide-react'
 import { BrandMark } from './BrandMark'
 import { siteConfig } from '../data/site'
-import { formatMoney } from '../lib/money'
 import { useCart } from '../hooks/useCart'
 
 const navItems = [
@@ -34,14 +33,6 @@ export function Header() {
 
   return (
     <>
-      <div className="announcement">
-        <div className="shell announcement-inner">
-          <span>Demo store — no real payments are processed</span>
-          <Link to="/teas#shipping-details">
-            Free shipping on {formatMoney(siteConfig.shipping.freeThresholdCents)}+
-          </Link>
-        </div>
-      </div>
       <header className="site-header">
         <div className="shell header-inner">
           <Link className="brand" to="/" aria-label={`${siteConfig.brand} home`}>

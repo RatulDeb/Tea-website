@@ -1,4 +1,4 @@
-# Leaf & Kettle
+# Cha Ghor
 
 A complete, responsive demo tea shop built with React, TypeScript, Vite, React Router, and lucide-react.
 

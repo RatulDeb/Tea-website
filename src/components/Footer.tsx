@@ -1,5 +1,6 @@
 ﻿import { Link } from 'react-router-dom'
-import { Clock, Leaf, Mail, MapPin, Phone } from 'lucide-react'
+import { Clock, Mail, MapPin, Phone } from 'lucide-react'
+import { BrandMark } from './BrandMark'
 import { siteConfig } from '../data/site'
 import { formatAddress, gmailComposeUrl, googleMapsUrl, telHref } from '../lib/contact'
 import { formatMoney } from '../lib/money'
@@ -29,7 +30,7 @@ export function Footer() {
         <div className="footer-brand">
           <Link className="brand footer-brand-link" to="/">
             <span className="brand-seal" aria-hidden="true">
-              <Leaf />
+              <BrandMark />
             </span>
             <span className="brand-text">
               <span className="brand-name">{siteConfig.brand}</span>

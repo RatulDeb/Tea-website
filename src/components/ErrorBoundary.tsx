@@ -19,7 +19,7 @@ export class ErrorBoundary extends Component<
   }
 
   componentDidCatch(error: Error, info: ErrorInfo) {
-    console.error('Leaf & Kettle app error:', error, info)
+    console.error('Cha Ghor app error:', error, info)
   }
 
   render() {

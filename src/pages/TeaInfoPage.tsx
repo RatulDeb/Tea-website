@@ -33,7 +33,7 @@ export function TeaInfoPage() {
               A small shelf, <em>thoughtfully chosen.</em>
             </h1>
             <p className="info-lede">
-              Leaf &amp; Kettle is a demo tea atelier built around a simple idea:
+              Cha Ghor is a demo tea atelier built around a simple idea:
               a good cup should be easy to make, easy to understand, and worth
               slowing down for. Our range spans classic tea styles and
               caffeine-free herbal infusions, packed from 250 g up to 5 kg.

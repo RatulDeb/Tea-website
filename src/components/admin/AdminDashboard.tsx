@@ -6,7 +6,6 @@ import {
   ArrowUpRight,
   Download,
   Inbox,
-  Leaf,
   LoaderCircle,
   LogOut,
   RefreshCw,
@@ -14,6 +13,7 @@ import {
   Send,
 } from 'lucide-react'
 import { useToast } from '../../hooks/useToast'
+import { BrandMark } from '../BrandMark'
 import {
   deleteOrder,
   fetchOrders,
@@ -101,7 +101,7 @@ function downloadCsv(orders: Order[]) {
   const url = URL.createObjectURL(blob)
   const anchor = document.createElement('a')
   anchor.href = url
-  anchor.download = `leaf-kettle-orders-${new Date()
+  anchor.download = `cha-ghor-orders-${new Date()
     .toISOString()
     .slice(0, 10)}.csv`
   anchor.click()
@@ -349,10 +349,10 @@ export function AdminDashboard({ session }: { session: Session }) {
         <div className="shell admin-topbar-inner">
           <Link className="admin-brand" to="/">
             <span className="admin-brand-seal" aria-hidden="true">
-              <Leaf />
+              <BrandMark />
             </span>
             <span className="admin-brand-text">
-              <small>Leaf &amp; Kettle</small>
+              <small>Cha Ghor</small>
               <strong>Control panel</strong>
             </span>
           </Link>

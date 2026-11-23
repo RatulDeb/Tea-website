@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowLeft, KeyRound, Leaf, LoaderCircle, Lock } from 'lucide-react'
+import { ArrowLeft, KeyRound, LoaderCircle, Lock } from 'lucide-react'
+import { BrandMark } from '../BrandMark'
 import { supabase } from '../../lib/supabase'
 
 export function AdminLogin() {
@@ -40,9 +41,9 @@ export function AdminLogin() {
     <div className="admin admin-auth">
       <div className="admin-auth-card">
         <span className="admin-auth-seal" aria-hidden="true">
-          <Leaf />
+          <BrandMark />
         </span>
-        <p className="eyebrow">Leaf &amp; Kettle</p>
+        <p className="eyebrow">Cha Ghor</p>
         <h1>Shop control panel</h1>
         <p className="admin-auth-lede">
           Sign in with the shop owner account to see customer orders, delivery

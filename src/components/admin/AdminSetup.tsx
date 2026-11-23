@@ -3,19 +3,19 @@ import {
   ArrowLeft,
   Database,
   KeyRound,
-  Leaf,
   Lock,
   Send,
 } from 'lucide-react'
+import { BrandMark } from '../BrandMark'
 
 export function AdminSetup() {
   return (
     <div className="admin admin-auth">
       <div className="admin-auth-card admin-setup">
         <span className="admin-auth-seal" aria-hidden="true">
-          <Leaf />
+          <BrandMark />
         </span>
-        <p className="eyebrow">Leaf &amp; Kettle</p>
+        <p className="eyebrow">Cha Ghor</p>
         <h1>Connect your control panel</h1>
         <p className="admin-auth-lede">
           The storefront is ready, but orders need a Supabase database and a

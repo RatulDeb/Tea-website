@@ -1,5 +1,5 @@
 export const siteConfig = {
-  brand: 'Leaf & Kettle',
+  brand: 'Cha Ghor',
   tagline: 'Tea atelier',
   locale: 'en-US',
   currency: 'BDT',

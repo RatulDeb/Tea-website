@@ -400,20 +400,23 @@ h3 {
 
 .brand-seal {
   display: grid;
-  width: 38px;
-  height: 38px;
+  width: 44px;
+  height: 44px;
   flex: none;
   place-items: center;
-  border: 1px solid var(--gold);
+  overflow: hidden;
+  border: 1px solid rgba(184, 153, 82, 0.55);
   border-radius: 50%;
-  background: radial-gradient(circle at 30% 20%, #fffdf7, #eee2c9);
-  box-shadow: inset 0 0 0 4px rgba(184, 153, 82, 0.14);
-  color: var(--forest-800);
+  background: #fffdf7;
+  box-shadow: 0 1px 2px rgba(20, 58, 43, 0.08);
 }
 
-.brand-seal svg {
-  width: 19px;
-  height: 19px;
+.brand-seal img {
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  padding: 3px;
+  object-fit: contain;
 }
 
 .brand-text {
@@ -3175,8 +3178,7 @@ input[type='search']::-webkit-search-cancel-button {
 
 .footer-brand .brand-seal {
   border-color: var(--gold);
-  background: rgba(255, 253, 248, 0.08);
-  color: var(--cream);
+  background: var(--cream);
 }
 
 .footer-brand .brand-tagline {
@@ -3886,17 +3888,20 @@ input[type='search']::-webkit-search-cancel-button {
 
 .admin-brand-seal {
   display: grid;
-  width: 38px;
-  height: 38px;
+  width: 40px;
+  height: 40px;
   place-items: center;
+  overflow: hidden;
   border-radius: 50%;
-  background: var(--gold-soft);
-  color: var(--forest-950);
+  background: var(--cream);
 }
 
-.admin-brand-seal svg {
-  width: 19px;
-  height: 19px;
+.admin-brand-seal img {
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  padding: 3px;
+  object-fit: contain;
 }
 
 .admin-brand-text {
@@ -4016,18 +4021,22 @@ input[type='search']::-webkit-search-cancel-button {
 
 .admin-auth-seal {
   display: grid;
-  width: 54px;
-  height: 54px;
+  width: 60px;
+  height: 60px;
   place-items: center;
+  overflow: hidden;
   margin-bottom: 1.2rem;
+  border: 1px solid rgba(184, 153, 82, 0.5);
   border-radius: 50%;
-  background: var(--forest-900);
-  color: var(--gold-soft);
+  background: var(--paper);
 }
 
-.admin-auth-seal svg {
-  width: 25px;
-  height: 25px;
+.admin-auth-seal img {
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  padding: 4px;
+  object-fit: contain;
 }
 
 .admin-auth-card h1 {

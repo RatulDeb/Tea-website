@@ -1,6 +1,7 @@
 ﻿import { useEffect, useRef, useState } from 'react'
 import { Link, NavLink } from 'react-router-dom'
-import { Leaf, Menu, ShoppingBag, X } from 'lucide-react'
+import { Menu, ShoppingBag, X } from 'lucide-react'
+import { BrandMark } from './BrandMark'
 import { siteConfig } from '../data/site'
 import { formatMoney } from '../lib/money'
 import { useCart } from '../hooks/useCart'
@@ -45,7 +46,7 @@ export function Header() {
         <div className="shell header-inner">
           <Link className="brand" to="/" aria-label={`${siteConfig.brand} home`}>
             <span className="brand-seal" aria-hidden="true">
-              <Leaf />
+              <BrandMark />
             </span>
             <span className="brand-text">
               <span className="brand-name">{siteConfig.brand}</span>

@@ -1,6 +1,6 @@
-# Leaf & Kettle — agent notes
+# Cha Ghor — agent notes
 
-Demo tea shop ("Leaf & Kettle", 20 teas) built with Vite + React 19 + TypeScript, React Router, plain CSS. Prices in BDT (৳).
+Demo tea shop ("Cha Ghor", 20 teas) built with Vite + React 19 + TypeScript, React Router, plain CSS. Prices in BDT (৳).
 
 ## Motive
 Build a polished, production-style demo tea shop that showcases a real storefront experience: browse 20 teas, pick pack sizes, add to cart, check out (demo payments / pay on delivery), and let the owner manage incoming orders from a private `/admin` desk backed by Supabase + Telegram alerts. It is a portfolio/demo project — no real payments — but the flows (orders, auth, notifications) are wired end-to-end so the site behaves like a real shop.
@@ -8,6 +8,7 @@ Build a polished, production-style demo tea shop that showcases a real storefron
 ## Change log
 **Rule for every AI agent:** after making any change, add a dated entry below (newest first) stating what changed and why, so the next agent understands the current state. Keep it concise.
 - 2026-11-22 — Added the "Motive" and "Change log" sections to AGENTS.md so every future agent records changes and understands the project's purpose.
+- 2026-11-23 — Renamed the brand from "Leaf & Kettle" to "Cha Ghor" and replaced the lucide leaf mark with the new house-and-cup logo (`public/images/cha-ghor-logo.png`) in the header, footer, admin login/setup, and dashboard, plus PNG favicon/apple-touch icons.
 
 ## Links & accounts
 - Live: https://teaghor.vercel.app — Vercel project `ratul-deb/teaghor`, account `debratul369-4574`.

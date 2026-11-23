@@ -8,6 +8,7 @@ Build a polished, production-style demo tea shop that showcases a real storefron
 ## Change log
 **Rule for every AI agent:** after making any change, add a dated entry below (newest first) stating what changed and why, so the next agent understands the current state. Keep it concise.
 - 2026-11-22 — Added the "Motive" and "Change log" sections to AGENTS.md so every future agent records changes and understands the project's purpose.
+- 2026-11-23 — Gave the PNG favicons a cream circular badge (gold ring) like the header logo so the dark house mark stays legible on dark browser tabs; added a 32×32 favicon.
 - 2026-11-23 — Added a workflow rule requiring every change/deploy reply to include both the website link and the admin panel link.
 - 2026-11-23 — Removed the top announcement bar ("Demo store — no real payments are processed" / "Free shipping on ৳35.00+") and its unused CSS so the sticky header sits flush at the top.
 - 2026-11-23 — Renamed the brand from "Leaf & Kettle" to "Cha Ghor" and replaced the lucide leaf mark with the new house-and-cup logo (`public/images/cha-ghor-logo.png`) in the header, footer, admin login/setup, and dashboard, plus PNG favicon/apple-touch icons.
